@@ -1,0 +1,27 @@
+# FlexTrack-V2 core runtime (inference + evaluation).
+# PyTorch itself is installed via conda (see environment.yml / install.sh) to get
+# the right CUDA build; it is intentionally not pinned here.
+numpy
+opencv-python
+Pillow
+timm
+PyYAML
+easydict
+yacs
+scipy
+pandas
+tqdm
+scikit-image
+six
+huggingface_hub          # download released weights / annotation masks
+
+# --- training extras (needed only to train from scratch) ---
+lmdb
+pycocotools
+jpeg4py
+tensorboard
+
+# --- optional: profiling / visualization / VOT (see pyproject.toml extras) ---
+# thop                   # FLOPs/params profiling            -> pip install ".[profile]"
+# matplotlib             # attention viz / figure generation -> pip install ".[viz]"
+# vot-toolkit-python     # DepthTrack / VOT-RGBD scoring      -> bash install_vot.sh

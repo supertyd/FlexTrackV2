@@ -1,0 +1,14 @@
+name: flextrackv2
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pytorch=2.1.2
+  - torchvision=0.16.2
+  - torchaudio=2.1.2
+  - pytorch-cuda=12.1
+  - pip
+  - pip:
+      - -r requirements.txt

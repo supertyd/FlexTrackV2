@@ -58,11 +58,16 @@ FlexTrack-V2 vs. the ICCV baseline (FlexTrack). Higher is better; **bold** marks
 ```bash
 git clone https://github.com/supertyd/FlexTrackV2.git
 cd FlexTrackV2
-conda create -n flextrack python=3.11
-conda activate flextrack
-bash install.sh
+
+# recommended: one-shot conda env (PyTorch 2.1.2 / CUDA 12.1 + all runtime deps)
+conda env create -f environment.yml
+conda activate flextrackv2
 export PYTHONPATH=$(pwd):$PYTHONPATH
 ```
+
+Optional extras: `pip install ".[train]"` (train-from-scratch), `".[viz]"` (attention/figure
+plotting), `".[profile]"` (FLOPs), and `bash install_vot.sh` (VOT toolkit for DepthTrack/VOT-RGBD).
+The legacy `bash install.sh` script installs the same stack step-by-step if you prefer.
 
 ## Model weights
 
