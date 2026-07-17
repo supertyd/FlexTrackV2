@@ -1,0 +1,16 @@
+bag01_indoor_2
+ball11_wild_1
+box1_outside_1
+box_darkroom_noocc_7_1
+box_room_noocc_3_1
+cat01_indoor_1
+cube05_indoor_1
+cup04_indoor_1
+file01_indoor_1
+humans_shirts_room_occ_1_A_1
+mug_gs_1
+pot_indoor_2
+shoes02_indoor_1
+toiletpaper01_indoor_2
+trendNetBag_outside_1
+yogurt_indoor_1

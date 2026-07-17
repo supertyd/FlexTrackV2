@@ -1,0 +1,16 @@
+bag01_indoor_1
+ball06_indoor_2
+bottle_box_5
+box_darkroom_noocc_6_1
+box_humans_room_occ_1_1
+case_1
+cube02_indoor_2
+cup02_indoor_1
+earphone01_indoor_1
+humans_corridor_occ_1_1
+mug_ankara_1
+pot_indoor_1
+roller_indoor_4
+toiletpaper01_indoor_1
+trashcans_room_occ_1_B_3
+XMG_outside_2

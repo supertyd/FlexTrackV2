@@ -1,0 +1,97 @@
+# ---------------------------------------------------------------------------
+# FlexTrack-V2 .gitignore
+# Ships: lib/, experiments/flextrackv2/, scripts/, tracking/, docs/, results/,
+#        archive/{configs,scripts,docs_history}, and the RGBT/RGBE eval drivers.
+# Kept out: weights, datasets, workspaces, raw result dumps, logs, local paths.
+# ---------------------------------------------------------------------------
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+build/
+dist/
+*.egg-info/
+.eggs/
+.ipynb_checkpoints
+.pytest_cache/
+.mypy_cache/
+
+# Environments / IDE
+.env
+.venv
+env/
+venv/
+ENV/
+.idea/
+.vscode/
+
+# Local machine paths (ship the .example templates instead)
+lib/train/admin/local.py
+lib/test/evaluation/local.py
+
+# --- Model weights (released on HuggingFace, not in git) ---
+*.pth
+*.pth.tar
+*.pt
+pretrained/
+pretrained_networks/
+output/
+train/
+tensorboard/
+# checkpoints/: ship only the integrity hash, not the weights
+checkpoints/*
+!checkpoints/*.sha256
+
+# --- Datasets & synthetic annotations ---
+/data/
+/data_missing_modality/
+/dataset_samples/
+
+# --- Eval workspaces: ship only the small driver / config files ---
+/workspace/
+/RGBT_workspace/*
+!/RGBT_workspace/test_rgbt_mgpus.py
+!/RGBT_workspace/test_depthtrack_mgpus.py
+/RGBE_workspace/*
+!/RGBE_workspace/test_rgbe_mgpus.py
+!/RGBE_workspace/test_rgbe_missrate.py
+!/RGBE_workspace/test_rgbe_edge.py
+/Depthtrack_workspace/*
+!/Depthtrack_workspace/config.yaml
+!/Depthtrack_workspace/dataset.json
+!/Depthtrack_workspace/trackers.ini
+/Depthtrack_workspace_[B-H]/
+/VOT22RGBD_workspace*/
+
+# --- Raw result dumps (metrics JSON under results/ ships; bulk does not) ---
+/best_result/
+/final_result/
+/base_best/
+/deliverables/
+/offline_wheels/
+/zip_files/
+/logs/
+/nextround_pull/
+/RGBT_toolkit_python/
+
+# --- Third-party toolkits / isolated trackers ---
+/external/
+/VisEvent_SOT_Benchmark/
+
+# --- Archive junk drawer: preserved on disk, not published ---
+/archive/misc/
+
+# --- Scratch / working artifacts ---
+/parity_check/
+*.log
+*.tar
+*.tar.gz
+*.zip
+*.bak
+*.bak_*
+output.png
+
+# under-review manuscript source (keep private)
+/paper/

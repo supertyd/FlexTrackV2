@@ -1,0 +1,27 @@
+{
+  "0": {
+    "precision": 66.32,
+    "recall": 69.17,
+    "fscore": 67.72
+  },
+  "25": {
+    "precision": 64.41,
+    "recall": 67.2,
+    "fscore": 65.78
+  },
+  "50": {
+    "precision": 64.0,
+    "recall": 66.72,
+    "fscore": 65.33
+  },
+  "75": {
+    "precision": 63.29,
+    "recall": 65.93,
+    "fscore": 64.58
+  },
+  "100": {
+    "precision": 61.01,
+    "recall": 63.58,
+    "fscore": 62.27
+  }
+}

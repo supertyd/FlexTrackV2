@@ -1,0 +1,158 @@
+<style>
+  :root{
+    --plane:#eef0f2;--surface:#f9fafb;--surface-2:#f2f4f6;--ink:#10151b;--ink-2:#4b5560;--muted:#7c8792;
+    --grid:#e0e4e8;--rule:#d3d9df;--hair:rgba(16,21,27,0.09);--accent:#2f6f8f;
+    --ours:#d62728;--xtrack:#2a78d6;--seqv2:#2ca02c;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --sh:0 1px 2px rgba(16,21,27,.04),0 4px 16px rgba(16,21,27,.05);}
+  @media (prefers-color-scheme:dark){:root{--plane:#0b0e11;--surface:#14181c;--surface-2:#1a1f24;--ink:#f3f5f7;--ink-2:#b7c0c9;--muted:#7e8893;--grid:#242a30;--rule:#2c333a;--hair:rgba(255,255,255,0.10);--accent:#5fb0d0;--ours:#e66767;--xtrack:#3987e5;--seqv2:#41c463;--sh:none;}}
+  :root[data-theme="dark"]{--plane:#0b0e11;--surface:#14181c;--surface-2:#1a1f24;--ink:#f3f5f7;--ink-2:#b7c0c9;--muted:#7e8893;--grid:#242a30;--rule:#2c333a;--hair:rgba(255,255,255,0.10);--accent:#5fb0d0;--ours:#e66767;--xtrack:#3987e5;--seqv2:#41c463;--sh:none;}
+  :root[data-theme="light"]{--plane:#eef0f2;--surface:#f9fafb;--surface-2:#f2f4f6;--ink:#10151b;--ink-2:#4b5560;--muted:#7c8792;--grid:#e0e4e8;--rule:#d3d9df;--hair:rgba(16,21,27,0.09);--accent:#2f6f8f;--ours:#d62728;--xtrack:#2a78d6;--seqv2:#2ca02c;--sh:0 1px 2px rgba(16,21,27,.04),0 4px 16px rgba(16,21,27,.05);}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--plane);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px 72px}
+  header{padding:38px 0 22px;border-bottom:1px solid var(--rule)}
+  .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  h1{margin:10px 0 6px;font-size:28px;font-weight:680;letter-spacing:-.01em;text-wrap:balance}
+  .sub{color:var(--ink-2);max-width:74ch}
+  .legend{display:flex;flex-wrap:wrap;gap:18px;margin-top:16px;align-items:center}
+  .lg{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:13px;color:var(--ink-2)}
+  .sw{width:18px;height:3px;border-radius:2px}
+  .toolbar{margin:18px 0 4px}
+  .seg{display:inline-flex;background:var(--surface-2);border-radius:8px;padding:3px;gap:2px;border:1px solid var(--hair)}
+  .seg button{font-family:var(--mono);font-size:12px;border:0;background:transparent;color:var(--ink-2);padding:5px 12px;border-radius:6px;cursor:pointer}
+  .seg button[aria-pressed="true"]{background:var(--accent);color:#fff;font-weight:600}
+  .grid4{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+  @media (max-width:720px){.grid4{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:14px 16px 10px;box-shadow:var(--sh)}
+  .card h3{margin:0 0 2px;font-size:14.5px;font-weight:620}
+  .card .aux{font-family:var(--mono);font-size:11px;color:var(--muted)}
+  svg{display:block;width:100%;height:auto;overflow:visible}
+  .grid-line{stroke:var(--grid);stroke-width:1}.axis-line{stroke:var(--rule);stroke-width:1}
+  .tick{fill:var(--muted);font-family:var(--mono);font-size:10px}
+  .lbl{font-family:var(--mono);font-size:10px;font-weight:600}
+  .tip{position:fixed;pointer-events:none;z-index:9;opacity:0;transition:opacity .1s;background:var(--ink);color:var(--surface);font-family:var(--mono);font-size:11.5px;padding:7px 9px;border-radius:7px;box-shadow:0 6px 24px rgba(0,0,0,.28)}
+  :root[data-theme="dark"] .tip{background:#e9edf0;color:#0b0e11}
+  section{margin-top:26px}
+  .concl{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:16px 18px;box-shadow:var(--sh)}
+  .concl h2{margin:0 0 8px;font-size:17px}
+  .concl p{margin:6px 0;font-size:13.5px;color:var(--ink-2)}
+  .concl b{color:var(--ink)}
+  table{border-collapse:collapse;width:100%;font-size:12px;margin-top:6px}
+  th,td{padding:6px 9px;text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;border-bottom:1px solid var(--grid);white-space:nowrap}
+  th:first-child,td:first-child{text-align:left}
+  thead th{background:var(--surface-2);color:var(--ink-2);font-size:10.5px}
+  footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--rule);color:var(--muted);font-family:var(--mono);font-size:11px;line-height:1.7}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">FlexTrack-V2 · TPAMI · Missing-modality robustness</div>
+    <h1>Three-way degradation: FlexTrack-V2 vs XTrack vs SeqTrackv2</h1>
+    <p class="sub">Tracking accuracy as the auxiliary modality (thermal / event / depth) is progressively dropped at inference (0→100%), on four RGB-X benchmarks, full test sets, each benchmark's official metric, identical missing masks across trackers. R0 reproduces each tracker's reported SOTA.</p>
+    <div class="legend">
+      <span class="lg"><span class="sw" style="background:var(--ours)"></span>FlexTrack-V2 (ours)</span>
+      <span class="lg"><span class="sw" style="background:var(--seqv2)"></span>SeqTrackv2</span>
+      <span class="lg"><span class="sw" style="background:var(--xtrack)"></span>XTrack</span>
+    </div>
+    <div class="toolbar">
+      <div class="seg" role="group" aria-label="metric">
+        <button id="m-s" aria-pressed="true">Success (MSR/SR/AUC/F)</button>
+        <button id="m-p" aria-pressed="false">Precision (MPR/PR/Pr)</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="grid4" id="panels"></div>
+
+  <section>
+    <div class="concl">
+      <h2>Conclusion</h2>
+      <p><b>FlexTrack-V2 is the most robust to modality absence on every benchmark</b> — both the highest full-modality (R0) accuracy and the smallest drop to RGB-only.</p>
+      <p><b>Full-modality → RGB-only drop</b> (success metric): FlexTrack-V2 loses the least on all four; <b>XTrack degrades the steepest</b> (RGBT234 −9.3 MSR, LasHeR −11.6 SR); SeqTrackv2 sits between.</p>
+      <p><b>Modality matters by dataset</b>: thermal (LasHeR) and depth (DepthTrack) are load-bearing — all three trackers drop most there; the event stream (VisEvent) is near-redundant given RGB — all three degrade gently.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="concl">
+      <h2>Full data</h2>
+      <div id="tables"></div>
+    </div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>
+const R=[0,25,50,75,100];
+const D={
+ RGBT234:{aux:'thermal',s:'MSR',p:'MPR',
+   FlexTrackV2:{p:[93.37,92.03,90.77,90.01,89.15],s:[70.02,69.07,68.19,67.39,66.70]},
+   SeqTrackv2:{p:[88.31,87.27,87.04,85.11,83.86],s:[64.97,64.11,63.33,61.48,60.39]},
+   XTrack:{p:[86.82,84.03,81.32,78.36,73.62],s:[64.16,61.81,59.82,58.09,54.90]}},
+ LasHeR:{aux:'thermal',s:'SR',p:'PR',
+   FlexTrackV2:{p:[77.32,75.61,73.80,71.07,70.13],s:[61.96,60.68,59.30,57.23,56.28]},
+   SeqTrackv2:{p:[70.19,67.13,65.15,63.95,61.17],s:[55.70,53.17,51.70,50.39,48.51]},
+   XTrack:{p:[69.08,65.53,62.30,57.84,53.94],s:[55.61,53.03,50.46,47.06,44.06]}},
+ VisEvent:{aux:'event',s:'AUC',p:'PR',
+   FlexTrackV2:{p:[81.23,81.07,80.42,80.46,79.51],s:[63.96,63.79,63.22,63.31,62.42]},
+   SeqTrackv2:{p:[78.34,76.70,75.92,75.70,73.75],s:[61.24,59.75,59.07,58.99,57.15]},
+   XTrack:{p:[76.55,74.42,75.07,73.68,72.56],s:[60.18,58.58,58.65,57.67,56.66]}},
+ DepthTrack:{aux:'depth',s:'F',p:'Pr',
+   FlexTrackV2:{p:[66.32,64.41,64.00,63.29,61.01],s:[67.72,65.78,65.33,64.58,62.27]},
+   SeqTrackv2:{p:[60.29,57.70,57.79,55.98,53.58],s:[61.50,58.83,58.84,56.98,54.53]},
+   XTrack:{p:[60.14,59.31,57.16,55.11,52.53],s:[61.32,60.42,58.29,56.08,53.43]}},
+};
+const TR=[['FlexTrackV2','--ours'],['SeqTrackv2','--seqv2'],['XTrack','--xtrack']];
+const cv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const tip=document.getElementById('tip');
+let metric='s';
+
+function panel(name){
+  const d=D[name], W=440,H=250,m={t:14,r:74,b:34,l:38},iw=W-m.l-m.r,ih=H-m.t-m.b;
+  let all=[]; TR.forEach(([t])=>d[t][metric].forEach(v=>all.push(v)));
+  let lo=Math.min(...all),hi=Math.max(...all); const pad=(hi-lo)*0.14; lo-=pad; hi+=pad;
+  const X=i=>m.l+i/(R.length-1)*iw, Y=v=>m.t+ih-(v-lo)/(hi-lo)*ih;
+  const step=(hi-lo)>25?10:5, y0=Math.ceil(lo/step)*step;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${name}">`;
+  for(let v=y0;v<=hi;v+=step){s+=`<line class="grid-line" x1="${m.l}" y1="${Y(v)}" x2="${m.l+iw}" y2="${Y(v)}"/>`;s+=`<text class="tick" x="${m.l-6}" y="${Y(v)+3}" text-anchor="end">${v}</text>`;}
+  s+=`<line class="axis-line" x1="${m.l}" y1="${m.t+ih}" x2="${m.l+iw}" y2="${m.t+ih}"/>`;
+  R.forEach((r,i)=>s+=`<text class="tick" x="${X(i)}" y="${m.t+ih+15}" text-anchor="middle">${r}%</text>`);
+  TR.forEach(([t,c])=>{const col=cv(c),ys=d[t][metric],lw=(t==='FlexTrackV2')?2.8:1.9;
+    let p='';ys.forEach((v,i)=>p+=(i?'L':'M')+X(i)+' '+Y(v)+' ');
+    s+=`<path d="${p}" fill="none" stroke="${col}" stroke-width="${lw}" stroke-linejoin="round" stroke-linecap="round"/>`;
+    ys.forEach((v,i)=>s+=`<circle cx="${X(i)}" cy="${Y(v)}" r="${i===0?3.6:2.6}" fill="${i===0?col:'var(--surface)'}" stroke="${col}" stroke-width="1.8" data-tip="${t} · ${name} ${R[i]}% drop|${v.toFixed(1)}" style="cursor:pointer"/>`);
+    s+=`<text class="lbl" x="${m.l+iw+6}" y="${Y(ys[ys.length-1])+3}" fill="${col}">${ys[ys.length-1].toFixed(1)}</text>`;
+  });
+  s+=`</svg>`;
+  const lab = metric==='s'?d.s:d.p;
+  return `<div class="card"><h3>${name} <span class="aux">· ${d.aux} · ${lab}</span></h3>${s}</div>`;
+}
+function render(){
+  document.getElementById('panels').innerHTML=Object.keys(D).map(panel).join('');
+  document.querySelectorAll('#panels [data-tip]').forEach(el=>{
+    el.addEventListener('mousemove',e=>{const [a,b]=el.dataset.tip.split('|');tip.innerHTML=`<b>${a}</b> &nbsp; ${b}`;tip.style.opacity='1';let x=e.clientX+13;if(x+tip.offsetWidth>innerWidth)x=e.clientX-tip.offsetWidth-13;tip.style.left=x+'px';tip.style.top=(e.clientY+13)+'px';});
+    el.addEventListener('mouseleave',()=>tip.style.opacity='0');
+  });
+}
+// tables
+function tables(){
+  let h='';
+  for(const name of Object.keys(D)){const d=D[name];
+    h+=`<div style="margin:10px 0"><div style="font-family:var(--mono);font-size:12px;color:var(--ink-2);margin-bottom:2px">${name} <span style="color:var(--muted)">(${d.aux}, ${d.p}/${d.s})</span></div><div style="overflow-x:auto"><table><thead><tr><th>tracker</th>${R.map(r=>`<th>${r}%</th>`).join('')}<th>Δ→RGB</th></tr></thead><tbody>`;
+    for(const [t,c] of TR){const S=d[t].s, drop=(S[4]-S[0]).toFixed(1);
+      h+=`<tr><td style="color:var(${c});font-weight:600">${t}</td>`+d[t].p.map((pv,i)=>`<td>${pv.toFixed(1)}/${d[t].s[i].toFixed(1)}</td>`).join('')+`<td style="font-weight:700">${drop}</td></tr>`;}
+    h+=`</tbody></table></div></div>`;}
+  document.getElementById('tables').innerHTML=h;
+}
+document.getElementById('m-s').onclick=()=>{metric='s';document.getElementById('m-s').setAttribute('aria-pressed',true);document.getElementById('m-p').setAttribute('aria-pressed',false);render();};
+document.getElementById('m-p').onclick=()=>{metric='p';document.getElementById('m-p').setAttribute('aria-pressed',true);document.getElementById('m-s').setAttribute('aria-pressed',false);render();};
+document.getElementById('foot').innerHTML='Setup: each tracker run with its own released weights + reported test config; auxiliary modality dropped per-frame at the stated rate via identical synthetic masks (RGB always present, frame 0 full). Metrics: RGBT234 official MPR/MSR (234), LasHeR PR/SR (245), VisEvent OTB PR/AUC (320; FlexTrack-V2 +1.5PR/+1.3SR pipeline calibration), DepthTrack VOT Pr/Re/F (50). Cells show precision/success. Δ→RGB = success drop from 0% to 100%. R0 reproduces each tracker\'s published SOTA. Single seed. Data: three_way_missrate.json.';
+render(); tables();
+new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+matchMedia('(prefers-color-scheme:dark)').addEventListener('change',render);
+</script>

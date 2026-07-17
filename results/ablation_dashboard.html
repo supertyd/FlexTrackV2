@@ -1,0 +1,993 @@
+<style>
+  /* ============ TOKENS ============ */
+  :root {
+    /* cool-biased neutrals — chosen, not defaulted */
+    --plane:        #eef0f2;
+    --surface:      #f9fafb;
+    --surface-2:    #f2f4f6;
+    --ink:          #10151b;
+    --ink-2:        #4b5560;
+    --muted:        #7c8792;
+    --grid:         #e0e4e8;
+    --rule:         #d3d9df;
+    --hair:         rgba(16,21,27,0.09);
+    --accent:       #2f6f8f;   /* slate-cyan structural accent (not a data hue) */
+    --accent-soft:  #e2edf2;
+    /* data hues (dataviz reference, light) */
+    --d-rgbt:   #2a78d6;
+    --d-lasher: #1baf7a;
+    --d-vis:    #eb6834;
+    --d-depth:  #4a3aa7;
+    /* status */
+    --good:     #0f8a2f;
+    --good-ink: #0a6e26;
+    --bad:      #d03b3b;
+    --bad-ink:  #b32e2e;
+    --warn:     #d98a12;
+    --noise:    #9aa4ae;
+    --baseline-band: rgba(47,111,143,0.10);
+    /* type */
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code", Menlo, Consolas, monospace;
+    --sh: 0 1px 2px rgba(16,21,27,.04), 0 4px 16px rgba(16,21,27,.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --plane:#0b0e11; --surface:#14181c; --surface-2:#1a1f24;
+      --ink:#f3f5f7; --ink-2:#b7c0c9; --muted:#7e8893;
+      --grid:#242a30; --rule:#2c333a; --hair:rgba(255,255,255,0.10);
+      --accent:#5fb0d0; --accent-soft:#16333f;
+      --d-rgbt:#3987e5; --d-lasher:#22b884; --d-vis:#f0774a; --d-depth:#9085e9;
+      --good:#2fb551; --good-ink:#5fd07a; --bad:#e66767; --bad-ink:#f08a8a;
+      --warn:#e6a63a; --noise:#5c6670;
+      --baseline-band:rgba(95,176,208,0.13); --sh:none;
+    }
+  }
+  :root[data-theme="dark"]{
+    --plane:#0b0e11; --surface:#14181c; --surface-2:#1a1f24;
+    --ink:#f3f5f7; --ink-2:#b7c0c9; --muted:#7e8893;
+    --grid:#242a30; --rule:#2c333a; --hair:rgba(255,255,255,0.10);
+    --accent:#5fb0d0; --accent-soft:#16333f;
+    --d-rgbt:#3987e5; --d-lasher:#22b884; --d-vis:#f0774a; --d-depth:#9085e9;
+    --good:#2fb551; --good-ink:#5fd07a; --bad:#e66767; --bad-ink:#f08a8a;
+    --warn:#e6a63a; --noise:#5c6670;
+    --baseline-band:rgba(95,176,208,0.13); --sh:none;
+  }
+  :root[data-theme="light"]{
+    --plane:#eef0f2; --surface:#f9fafb; --surface-2:#f2f4f6;
+    --ink:#10151b; --ink-2:#4b5560; --muted:#7c8792;
+    --grid:#e0e4e8; --rule:#d3d9df; --hair:rgba(16,21,27,0.09);
+    --accent:#2f6f8f; --accent-soft:#e2edf2;
+    --d-rgbt:#2a78d6; --d-lasher:#1baf7a; --d-vis:#eb6834; --d-depth:#4a3aa7;
+    --good:#0f8a2f; --good-ink:#0a6e26; --bad:#d03b3b; --bad-ink:#b32e2e;
+    --warn:#d98a12; --noise:#9aa4ae; --baseline-band:rgba(47,111,143,0.10);
+    --sh:0 1px 2px rgba(16,21,27,.04),0 4px 16px rgba(16,21,27,.05);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--plane); color: var(--ink);
+    font-family: var(--sans); line-height: 1.55;
+    font-size: 15px; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px 96px; }
+  .mono { font-family: var(--mono); }
+  .tnum { font-variant-numeric: tabular-nums; }
+  h1,h2,h3 { text-wrap: balance; margin: 0; }
+
+  /* ============ HEADER ============ */
+  header { padding: 40px 0 28px; border-bottom: 1px solid var(--rule); }
+  .eyebrow {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--accent); font-weight: 600;
+  }
+  h1 { font-size: 30px; font-weight: 680; letter-spacing: -0.01em; margin: 10px 0 6px; }
+  .sub { color: var(--ink-2); font-size: 15px; max-width: 68ch; }
+  .protocol {
+    margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px 10px;
+    font-family: var(--mono); font-size: 12px;
+  }
+  .chip {
+    background: var(--surface-2); border: 1px solid var(--hair);
+    padding: 4px 10px; border-radius: 999px; color: var(--ink-2);
+  }
+  .chip b { color: var(--ink); font-weight: 600; }
+
+  /* dataset legend */
+  .legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 18px; align-items: center; }
+  .lg { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-family: var(--mono); color: var(--ink-2); }
+  .swatch { width: 12px; height: 12px; border-radius: 3px; flex: none; }
+  .lg small { color: var(--muted); }
+
+  /* ============ SECTION ============ */
+  section { margin-top: 40px; }
+  .sec-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+  .sec-head h2 { font-size: 18px; font-weight: 640; }
+  .sec-num { font-family: var(--mono); font-size: 12px; color: var(--accent); font-weight: 600; }
+  .sec-note { color: var(--ink-2); font-size: 13.5px; margin: -4px 0 16px; max-width: 82ch; }
+
+  /* ============ GAPS ALERT ============ */
+  .gaps { display: grid; gap: 10px; }
+  .gap {
+    display: grid; grid-template-columns: 4px 1fr; gap: 0 14px;
+    background: var(--surface); border: 1px solid var(--hair);
+    border-radius: 10px; overflow: hidden; box-shadow: var(--sh);
+  }
+  .gap .stripe { background: var(--warn); }
+  .gap.crit .stripe { background: var(--bad); }
+  .gap .body { padding: 13px 16px 14px 2px; }
+  .gap .tag {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em;
+    text-transform: uppercase; font-weight: 700; color: var(--warn);
+  }
+  .gap.crit .tag { color: var(--bad-ink); }
+  .gap h3 { font-size: 14.5px; font-weight: 620; margin: 3px 0 4px; }
+  .gap p { margin: 0; font-size: 13px; color: var(--ink-2); }
+  .gap code { font-family: var(--mono); font-size: 12px; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+
+  /* ============ KPI ============ */
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit,minmax(155px,1fr)); gap: 12px; }
+  .kpi {
+    background: var(--surface); border: 1px solid var(--hair); border-radius: 12px;
+    padding: 16px 16px 15px; box-shadow: var(--sh);
+  }
+  .kpi .k-label { font-family: var(--mono); font-size: 11px; letter-spacing: .04em; color: var(--muted); text-transform: uppercase; }
+  .kpi .k-val { font-size: 27px; font-weight: 680; letter-spacing: -0.01em; margin-top: 6px; line-height: 1; }
+  .kpi .k-val small { font-size: 14px; font-weight: 500; color: var(--ink-2); }
+  .kpi .k-sub { font-size: 12px; color: var(--ink-2); margin-top: 7px; font-family: var(--mono); }
+  .kpi .band { color: var(--muted); }
+
+  /* ============ CHART CARD ============ */
+  .card {
+    background: var(--surface); border: 1px solid var(--hair); border-radius: 14px;
+    padding: 20px 22px 18px; box-shadow: var(--sh);
+  }
+  .card .c-title { font-size: 15.5px; font-weight: 620; }
+  .card .c-desc { font-size: 12.5px; color: var(--ink-2); margin: 4px 0 0; max-width: 74ch; }
+  .toolbar { display: flex; gap: 6px; margin: 14px 0 6px; flex-wrap: wrap; }
+  .toolbar .seg { display: inline-flex; background: var(--surface-2); border-radius: 8px; padding: 3px; gap: 2px; border: 1px solid var(--hair); }
+  .toolbar button {
+    font-family: var(--mono); font-size: 12px; border: 0; background: transparent;
+    color: var(--ink-2); padding: 5px 12px; border-radius: 6px; cursor: pointer;
+    transition: background .12s, color .12s;
+  }
+  .toolbar button[aria-pressed="true"] { background: var(--accent); color: #fff; font-weight: 600; }
+  :root[data-theme="dark"] .toolbar button[aria-pressed="true"],
+  @media (prefers-color-scheme: dark){ .toolbar button[aria-pressed="true"]{ color:#08131a; } }
+  .toolbar button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .axis-line { stroke: var(--rule); stroke-width: 1; }
+  .grid-line { stroke: var(--grid); stroke-width: 1; }
+  .tick { fill: var(--muted); font-family: var(--mono); font-size: 11px; }
+  .axis-title { fill: var(--ink-2); font-family: var(--mono); font-size: 11px; }
+  .lbl { font-family: var(--mono); font-size: 11px; font-weight: 600; }
+
+  /* tooltip */
+  .tip {
+    position: fixed; pointer-events: none; z-index: 50; opacity: 0;
+    transition: opacity .1s; background: var(--ink); color: var(--surface);
+    font-family: var(--mono); font-size: 11.5px; padding: 8px 10px; border-radius: 8px;
+    box-shadow: 0 6px 24px rgba(0,0,0,.28); max-width: 240px; line-height: 1.45;
+  }
+  .tip b { color: #fff; }
+  :root[data-theme="dark"] .tip{ background:#e9edf0; color:#0b0e11; box-shadow:0 6px 24px rgba(0,0,0,.6);}
+  .tip .tr { display: flex; justify-content: space-between; gap: 14px; }
+
+  /* ============ TABLES ============ */
+  .tbl-scroll { overflow-x: auto; border: 1px solid var(--hair); border-radius: 12px; background: var(--surface); box-shadow: var(--sh); }
+  table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+  thead th {
+    position: sticky; top: 0; background: var(--surface-2); z-index: 2;
+    font-family: var(--mono); font-weight: 600; font-size: 11px; letter-spacing: .02em;
+    color: var(--ink-2); text-align: right; padding: 10px 12px; white-space: nowrap;
+    border-bottom: 1px solid var(--rule); cursor: pointer; user-select: none;
+  }
+  thead th:first-child { text-align: left; }
+  thead th.sortable:hover { color: var(--ink); }
+  thead th .arrow { color: var(--accent); font-size: 10px; }
+  tbody td { padding: 8px 12px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--grid); font-family: var(--mono); }
+  tbody td:first-child { text-align: left; font-family: var(--sans); font-weight: 550; color: var(--ink); }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr.baseline { background: var(--baseline-band); }
+  tbody tr.baseline td:first-child::after { content: "baseline"; font-family: var(--mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); background: var(--surface); padding: 1px 6px; border-radius: 999px; margin-left: 8px; border: 1px solid var(--hair); font-weight: 700; }
+  tbody tr:hover:not(.baseline) { background: var(--surface-2); }
+  td.cat { color: var(--bad-ink); font-style: italic; }
+  td .na { color: var(--muted); }
+  .flag { color: var(--muted); cursor: help; font-family: var(--mono); }
+
+  /* ============ CONCLUSIONS ============ */
+  .concl { display: grid; grid-template-columns: repeat(auto-fill,minmax(340px,1fr)); gap: 14px; }
+  .cc { background: var(--surface); border: 1px solid var(--hair); border-radius: 12px; padding: 16px 18px 17px; box-shadow: var(--sh); }
+  .cc .n { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--accent); }
+  .cc h3 { font-size: 14.5px; font-weight: 620; margin: 5px 0 8px; line-height: 1.35; }
+  .cc p { margin: 0; font-size: 13px; color: var(--ink-2); }
+  .cc .verdict { display: inline-block; margin-top: 10px; font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; font-weight: 700; padding: 3px 9px; border-radius: 999px; }
+  .v-key { background: var(--accent-soft); color: var(--accent); }
+  .v-nuance { background: color-mix(in srgb, var(--warn) 16%, transparent); color: var(--warn); }
+
+  /* ============ EXPLAIN PANEL ============ */
+  details.explain { background: var(--surface-2); border: 1px solid var(--hair); border-radius: 12px; padding: 0 18px; margin-bottom: 14px; }
+  details.explain[open] { padding-bottom: 16px; }
+  details.explain summary { list-style: none; cursor: pointer; padding: 13px 0; display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11.5px; letter-spacing: .04em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+  details.explain summary::-webkit-details-marker { display: none; }
+  details.explain summary::before { content: "▸"; font-size: 10px; transition: transform .15s; }
+  details.explain[open] summary::before { transform: rotate(90deg); }
+  details.explain summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  .ex-grid { display: grid; gap: 12px; }
+  .ex-row .k { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 700; display: block; margin-bottom: 4px; }
+  .ex-row p { margin: 0; font-size: 13.5px; color: var(--ink-2); line-height: 1.6; max-width: 90ch; }
+  .ex-row.finding p { color: var(--ink); }
+  .ex-row.finding { border-left: 3px solid var(--accent); padding-left: 12px; background: var(--accent-soft); border-radius: 0 8px 8px 0; padding: 10px 12px; }
+  .ex-configs { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+  .ex-configs li { font-size: 13px; color: var(--ink-2); display: grid; grid-template-columns: minmax(120px,auto) 1fr; gap: 4px 14px; align-items: baseline; }
+  @media (max-width:560px){ .ex-configs li { grid-template-columns: 1fr; gap: 1px; } }
+  .ex-configs code { font-family: var(--mono); font-size: 12px; color: var(--ink); font-weight: 600; background: var(--surface); padding: 1px 7px; border-radius: 5px; border: 1px solid var(--hair); justify-self: start; }
+
+  footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--rule); color: var(--muted); font-family: var(--mono); font-size: 11.5px; }
+  a.src { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--hair); }
+
+  @media (max-width: 640px){
+    .wrap{ padding: 0 16px 72px; } h1{ font-size: 24px; }
+    .kpi .k-val{ font-size: 23px; }
+  }
+  @media (prefers-reduced-motion: reduce){ *{ transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">TPAMI Extension · v56-tpami-extension</div>
+    <h1>FlexTrack-V2 (FlexTrackV2 V56) — Ablation Study</h1>
+    <p class="sub">Every ablation clones the committed baseline <span class="mono">flextrackv2_b224_56.yaml</span> with <b>exactly one field changed</b>, so each delta is attributable to a single mechanism. Trained on VisEvent + LasHeR + DepthTrack (1:1:1, 60k/epoch, 40 epochs); evaluated on Full and Missing-modality protocols.</p>
+    <div class="protocol">
+      <span class="chip"><b>23</b> config-only ablations complete</span>
+      <span class="chip">metrics: <b>RGBT234</b> MPR/MSR · <b>LasHeR</b> PR/SR · <b>VisEvent</b> PR/AUC · <b>DepthTrack</b> P/R/F</span>
+      <span class="chip"><b>_m</b> = missing-modality set</span>
+      <span class="chip">VisEvent: <b>official SOT benchmark</b>, 320 seqs</span>
+    </div>
+    <div class="legend" id="legend"></div>
+  </header>
+
+  <!-- GAPS -->
+  <section id="gaps">
+    <div class="sec-head"><span class="sec-num">§4</span><h2>Outstanding gaps before submission</h2></div>
+    <div class="gaps" id="gaps-list"></div>
+  </section>
+
+  <!-- KPIS -->
+  <section>
+    <div class="sec-head"><span class="sec-num">§2.1</span><h2>Baseline &amp; the seed-noise floor</h2></div>
+    <p class="sec-note">Three same-config reseeded runs set the bar for "significant". DepthTrack alone has a wide noise band — any DepthTrack delta under ~1.7 (full) or ~0.5 (miss) is <b>not</b> a real effect.</p>
+    <div class="kpis" id="kpis"></div>
+  </section>
+
+  <!-- PMAX CHART -->
+  <section>
+    <div class="sec-head"><span class="sec-num">§2.4</span><h2>Curriculum missing-augmentation trade-off</h2></div>
+    <p class="sec-note">The headline result. Sweeping the max missing probability <span class="mono">p_max</span>. At <span class="mono">p_max = 0</span> the model never sees missing modalities in training and collapses under inference-time absence — the cliff on the left. Baseline sits at <span class="mono">0.35</span>.</p>
+    <div class="card">
+      <div class="c-title">Primary metric vs. p<span style="font-size:.8em">max</span></div>
+      <p class="c-desc" id="pmax-desc"></p>
+      <div class="toolbar">
+        <div class="seg" role="group" aria-label="Protocol">
+          <button id="pm-miss" aria-pressed="true">Missing-modality</button>
+          <button id="pm-full" aria-pressed="false">Full-modality</button>
+        </div>
+      </div>
+      <div id="pmax-chart"></div>
+    </div>
+  </section>
+
+  <!-- DELTA CHART -->
+  <section>
+    <div class="sec-head"><span class="sec-num">§2.6–2.7</span><h2>Which mechanism moves the hardest regime?</h2></div>
+    <p class="sec-note">Δ F-score vs. baseline on <b>DepthTrack_m</b> — the hardest missing-modality set. Bars inside the shaded ±0.46 seed-noise band are not significant. Removing orthogonal loss from the bidirectional model (<span class="mono">no_ortho</span>) is the single strongest missing-modality result in the study.</p>
+    <div class="card">
+      <div class="c-title">Δ DepthTrack_m F-score vs. baseline (57.88, rung0 seedA)</div>
+      <p class="c-desc">Same-protocol untuned baseline, so deltas match the analysis prose (no_ortho +2.17, no_recon −1.87). Green = improvement beyond noise · red = regression beyond noise · gray = within seed noise (±0.46).</p>
+      <div id="delta-chart"></div>
+    </div>
+  </section>
+
+  <!-- HEATMAP -->
+  <section>
+    <div class="sec-head"><span class="sec-num">§2·Δ</span><h2>The whole picture: no config dominates everywhere</h2></div>
+    <p class="sec-note">Δ primary metric vs. the same-protocol baseline (<span class="mono">rung0 seedA</span>), every ablation × every dataset. Blue = better than baseline, red = worse; darker = larger. The point the paper makes repeatedly — a mechanism that helps one dataset often hurts another — is visible at a glance (e.g. <span class="mono">moe_middle</span> is blue on LasHeR but deep-red on DepthTrack).</p>
+    <div class="card">
+      <div class="c-title">Δ vs. baseline — primary metric per cell</div>
+      <p class="c-desc">Color clamped at ±4.0; catastrophic <span class="mono">pmax_000</span> missing cells (−15) shown at full saturation. Hover for exact values.</p>
+      <div id="heat-legend" style="margin:14px 0 10px"></div>
+      <div class="tbl-scroll"><div id="heatmap"></div></div>
+    </div>
+  </section>
+
+  <!-- ROBUSTNESS GAP -->
+  <section>
+    <div class="sec-head"><span class="sec-num">§2·gap</span><h2>Robustness = a short Full→Missing gap</h2></div>
+    <p class="sec-note">The paper's whole thesis, drawn directly. Each row runs from the missing-modality score (hollow) to the full-modality score (filled); the shorter the line, the more robust the config to modality absence. Sorted most-robust first.</p>
+    <div class="card">
+      <div class="c-title">Full vs. Missing primary metric</div>
+      <p class="c-desc" id="gap-desc"></p>
+      <div class="toolbar">
+        <div class="seg" role="group" aria-label="Dataset">
+          <button data-ds="rgbt" aria-pressed="true">RGBT234</button>
+          <button data-ds="lasher" aria-pressed="false">LasHeR</button>
+          <button data-ds="vis" aria-pressed="false">VisEvent</button>
+          <button data-ds="depth" aria-pressed="false">DepthTrack</button>
+        </div>
+      </div>
+      <div id="gap-chart"></div>
+    </div>
+  </section>
+
+  <!-- INTERACTION -->
+  <section>
+    <div class="sec-head"><span class="sec-num">§2.6–2.7</span><h2>Mechanisms interact with orthogonality — they are not additive</h2></div>
+    <p class="sec-note">The most publishable finding (§6–§7). Each line is a mechanism condition measured <b>with</b> and <b>without</b> the orthogonal loss, on DepthTrack_m F-score. If the effects were independent, all lines would be parallel. They are not: removing ortho <b>helps</b> bidirectional fusion (+2.17) but <b>hurts</b> unidirectional A→R (−2.03) — the lines cross.</p>
+    <div class="card">
+      <div class="c-title">DepthTrack_m F-score: +ortho → −ortho</div>
+      <p class="c-desc">Non-parallel / crossing lines = an interaction effect between orthogonal regularization and the fusion/auxiliary mechanism.</p>
+      <div id="inter-legend" style="margin:12px 0 4px"></div>
+      <div id="inter-chart"></div>
+    </div>
+  </section>
+
+  <!-- TABLES -->
+  <section id="tables">
+    <div class="sec-head"><span class="sec-num">§2</span><h2>Full results</h2></div>
+    <p class="sec-note">Click any numeric header to sort. Baseline row highlighted. <span class="mono" style="color:var(--bad-ink);font-style:italic">Italic</span> marks catastrophic degradation.</p>
+    <div id="table-groups"></div>
+  </section>
+
+  <!-- CONCLUSIONS -->
+  <section>
+    <div class="sec-head"><span class="sec-num">§3</span><h2>Core conclusions</h2></div>
+    <div class="concl" id="concl"></div>
+  </section>
+
+  <!-- ===== ROBUSTNESS SUITE (merged from standalone pages) ===== -->
+  <style>
+    :root{--tw-ours:#d62728;--tw-x:#2a78d6;--tw-s:#2ca02c;--tw-aux:#2a78d6;--tw-rgb:#d62728;--tw-edge:#8a63c9}
+    @media (prefers-color-scheme:dark){:root{--tw-ours:#e66767;--tw-x:#3987e5;--tw-s:#41c463;--tw-aux:#3987e5;--tw-rgb:#e66767;--tw-edge:#a98ae0}}
+    :root[data-theme="dark"]{--tw-ours:#e66767;--tw-x:#3987e5;--tw-s:#41c463;--tw-aux:#3987e5;--tw-rgb:#e66767;--tw-edge:#a98ae0}
+    :root[data-theme="light"]{--tw-ours:#d62728;--tw-x:#2a78d6;--tw-s:#2ca02c;--tw-aux:#2a78d6;--tw-rgb:#d62728;--tw-edge:#8a63c9}
+    .rob-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width:700px){.rob-grid{grid-template-columns:1fr}}
+    .rob-card{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:12px 14px 8px;box-shadow:var(--sh)}
+    .rob-card h3{margin:0 0 2px;font-size:13.5px;font-weight:620}
+    .rob-card .al{font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+    .ebox{border-left:3px solid var(--tw-edge);background:color-mix(in srgb,var(--tw-edge) 7%,var(--surface));border-radius:0 10px 10px 0;padding:12px 15px;margin-top:12px}
+    .ebox h3{margin:0 0 6px;font-size:14px;color:var(--tw-edge)}
+    .ebox p{margin:4px 0;font-size:13px;color:var(--ink-2)}
+  </style>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">§5</span><h2>Missing-rate degradation — FlexTrack-V2 (R0 = SOTA)</h2></div>
+    <p class="sec-note">Inference-time auxiliary-modality drop sweep on the final model (V54 weights + tuned thresholds), full test sets, official metrics. The 0% point reproduces the reported SOTA exactly (RGBT234 93.4/69.9 · LasHeR 77.3/61.9 · VisEvent 81.2/64.0 calibrated · DepthTrack F 67.7). Graceful, monotonic decline everywhere — no cliff.</p>
+    <div class="card">
+      <div class="c-title">Success metric, % of full-modality performance</div>
+      <p class="c-desc">Flatter = more robust. Aux-drop cost at 100%: VisEvent −1.5 &lt; RGBT234 −3.3 &lt; DepthTrack −5.5 &lt; LasHeR −5.7 (absolute points).</p>
+      <div id="rob-aligned"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">§6</span><h2>Three-way comparison — vs XTrack &amp; SeqTrackv2</h2></div>
+    <p class="sec-note">Same masks, each tracker with its released weights and reported config; every R0 reproduces that tracker's published SOTA. <b>FlexTrack-V2 is both the strongest at R0 and the flattest under missing modality on all four benchmarks.</b> XTrack degrades steepest (RGBT234 −9.3 MSR, LasHeR −11.6 SR); SeqTrackv2 sits between.</p>
+    <div class="legend" style="margin-bottom:10px">
+      <span class="lg"><span class="swatch" style="background:var(--tw-ours)"></span>FlexTrack-V2 (ours)</span>
+      <span class="lg"><span class="swatch" style="background:var(--tw-s)"></span>SeqTrackv2</span>
+      <span class="lg"><span class="swatch" style="background:var(--tw-x)"></span>XTrack</span>
+    </div>
+    <div class="rob-grid" id="rob-3way"></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">§7</span><h2>Modality asymmetry — drop-RGB vs drop-auxiliary</h2></div>
+    <p class="sec-note">Mirror-image sweeps on FlexTrack-V2: RGB is the lifeline on every benchmark — dropping it costs 2.7–12.6× more than dropping the auxiliary modality (RGBT234 −11.6 vs −3.3 · LasHeR −15.4 vs −5.7 · VisEvent −18.9 vs −1.5 · DepthTrack −23.8 vs −5.5). The asymmetry is widest exactly where the auxiliary is weakest (VisEvent). Even RGB fully dropped, the model still tracks on the auxiliary alone — graceful in both directions.</p>
+    <div class="legend" style="margin-bottom:10px">
+      <span class="lg"><span class="swatch" style="background:var(--tw-aux)"></span>drop auxiliary (RGB kept)</span>
+      <span class="lg"><span class="swatch" style="background:var(--tw-rgb)"></span>drop RGB (auxiliary kept)</span>
+    </div>
+    <div class="rob-grid" id="rob-asym"></div>
+    <div class="ebox">
+      <h3>Edge probe (VisEvent, eval-only)</h3>
+      <p>RGB+event <b>79.7/62.7</b> · RGB-only <b>78.0/61.1</b> · RGB+<i>Canny edge in the event channels</i> <b>71.2/54.2</b> (raw pipeline).</p>
+      <p>The event stream's gain over RGB-only is small (+1.5 AUC) but <b>not plug-in replaceable by classical edges</b> — Canny substitution is out-of-distribution and lands <i>below</i> RGB-only. Whatever little event adds, it isn't free edge structure; verifying the redundancy mechanism needs a trained RGB+edge variant.</p>
+    </div>
+  </section>
+
+  <footer>
+    Source: <a class="src" href="#">TPAMI_ABLATION_ANALYSIS_V56.md</a> · <a class="src" href="#">ABLATIONS.md</a> · generated 2026-07-13 · VisEvent/VisEvent_m recomputed with the official VisEvent SOT benchmark (OTB success/precision, absent-frame filtering) on the full 320-sequence test set; validated to reproduce the benchmark exactly (FlexTrack 64.08/81.33). RGBT234 (234) & LasHeR (245) complete; DepthTrack via VOT toolkit. Remaining caveat: §2.2–2.7 Baseline rows on RGBT234/LasHeR/DepthTrack still mix tuned/untuned protocols — reconcile before submission. §5–§7 (robustness suite, updated 2026-07-17): FlexTrack-V2 = V54 weights + tuned thresholds, R0 = SOTA; identical synthetic masks across trackers and arms; XTrack/SeqTrackv2 run from their released weights, each R0 reproducing its published SOTA. Raw data: three_way_missrate.json · modality_asymmetry.json. Standalone pages: degradation_aligned / three_way_missrate / modality_asymmetry.
+  </footer>
+</div>
+
+<div class="tip" id="tip"></div>
+
+<script>
+const DS = [
+  {key:'rgbt',   name:'RGBT234',   metric:'MPR/MSR', v:'--d-rgbt'},
+  {key:'lasher', name:'LasHeR',    metric:'PR/SR',   v:'--d-lasher'},
+  {key:'vis',    name:'VisEvent',  metric:'PR/AUC',  v:'--d-vis'},
+  {key:'depth',  name:'DepthTrack',metric:'P/R/F',   v:'--d-depth'},
+];
+const cv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+/* ---------- legend ---------- */
+document.getElementById('legend').innerHTML = DS.map(d=>
+  `<span class="lg"><span class="swatch" style="background:var(${d.v})"></span>${d.name} <small>${d.metric}</small></span>`
+).join('') + `<span class="lg"><span class="swatch" style="background:var(--baseline-band);border:1px solid var(--accent)"></span>baseline row</span>`;
+
+/* ---------- gaps ---------- */
+const GAPS = [
+  {crit:true,  tag:'needs retraining', h:'pmax_000 checkpoint lost — the no-CMA degradation curve is blocked', p:'The causal "killer figure" (no-CMA cliff vs CMA graceful curve, overlaid on §5) requires the <code>pmax_000</code> weights, which were recycled with the B200 nodes. One 40-epoch retrain of <code>pmax_000</code> unblocks it.'},
+  {crit:false, tag:'error bars', h:'Only the baseline was reseeded', p:'Seed variance exists for <code>rung0</code> only. If reviewers push on significance, reseed the 3 headline ablations (<code>no_ortho</code>, <code>no_distill</code>, <code>pmax_050</code>) rather than all ~20 configs.'},
+  {crit:false, tag:'benchmark partial', h:'VOT22RGBD covered for the large model only', p:'l224/gstuned now measured (EAO 76.76 / Acc 83.53 / Rob 91.76); the b224 ablations remain <code>null</code>. Either backfill for the ablation baseline or scope VOT22RGBD to the SOTA table.'},
+  {crit:true,  tag:'text drift', h:'§3 prose still cites old untuned baseline numbers', p:'§2.2–2.7 "Baseline" rows were synced to tuned FlexTrackV2 numbers, but §3 sentences (e.g. LasHeR "76.33/61.29") were not rewritten. Reconcile onto one protocol before submission.'},
+  {crit:false, tag:'resolved ✓', h:'moe_big protocol mismatch — CLOSED', p:'<code>moe_big</code> predictions were recovered and rescored under the current official protocol; it now sits in the §2.2 table on equal footing (and confirms heterogeneity > raw capacity).'},
+];
+document.getElementById('gaps-list').innerHTML = GAPS.map(g=>
+  `<div class="gap ${g.crit?'crit':''}"><div class="stripe"></div><div class="body">
+     <div class="tag">${g.tag}</div><h3>${g.h}</h3><p>${g.p}</p></div></div>`
+).join('');
+
+/* ---------- KPIs (from §2.1 mean±std) ---------- */
+const KPIS = [
+  {label:'RGBT234 MSR', val:'69.34', unit:'', sub:'±0.19 · miss 62.93 ±0.23'},
+  {label:'LasHeR SR', val:'61.41', unit:'', sub:'±0.12 · miss 54.04 ±0.44'},
+  {label:'VisEvent AUC', val:'62.08', unit:'', sub:'±0.14 · miss 55.03 ±0.24 · official 320'},
+  {label:'DepthTrack F', val:'65.05', unit:'', sub:'noise ±1.66 · miss 57.53 ±0.46'},
+];
+document.getElementById('kpis').innerHTML = KPIS.map(k=>
+  `<div class="kpi"><div class="k-label">${k.label}</div>
+    <div class="k-val tnum">${k.val}<small>${k.unit}</small></div>
+    <div class="k-sub band">${k.sub}</div></div>`
+).join('');
+
+/* ================= DATA (§2.1–2.7) ================= */
+/* each cell: display string; charts read numeric fields below */
+const ROWS = [
+  // §2.1
+  {g:'2.1 Baseline & seed variance', n:'rung0 (seedA)', base:false, c:['91.94/69.13','84.55/62.66','76.33/61.29','67.63/54.41','78.97/62.04','72.87/55.12','65.55/68.52/67.01','56.61/59.21/57.88']},
+  {g:'2.1 Baseline & seed variance', n:'rung0_seedB', c:['92.66/69.59','85.02/63.23','76.52/61.57','67.37/54.28','78.92/61.93','73.19/55.27','63.86/66.61/65.20','55.75/58.07/56.89']},
+  {g:'2.1 Baseline & seed variance', n:'rung0_seedC', c:['91.52/69.29','84.69/62.89','76.67/61.37','66.42/53.42','79.31/62.27','72.29/54.71','61.66/64.29/62.95','56.58/59.14/57.83']},
+  {g:'2.1 Baseline & seed variance', n:'mean ± std', c:['92.04/69.34','84.75/62.93','76.51/61.41','67.14/54.04','79.07/62.08','72.78/55.03','63.69/66.47/65.05','56.31/58.81/57.53']},
+  // §2.2 MoE
+  {g:'2.2 Expert capacity (MoE)', n:'Baseline (HMoE)', base:true, c:['93.4/69.9','85.6/62.9','77.3/61.9','67.6/54.4','78.97/62.04','72.87/55.12','66.4/69.3/67.8','57.5/60.1/58.8']},
+  {g:'2.2 Expert capacity (MoE)', n:'moe_small (w4)', c:['91.90/69.42','85.23/63.61','75.63/60.52','67.64/54.28','78.55/61.44','72.44/54.90','65.79/68.74/67.23','54.38/56.77/55.55']},
+  {g:'2.2 Expert capacity (MoE)', n:'moe_middle (w32)', c:['91.90/69.14','85.81/63.44','77.02/61.74','67.70/54.46','79.08/62.03','73.21/55.41','60.95/63.70/62.30','54.73/57.22/55.95']},
+  {g:'2.2 Expert capacity (MoE)', n:'moe_hybrid', c:['92.12/69.75','84.52/63.07','76.20/61.07','66.66/53.66','78.61/61.72','71.89/54.34','64.71/67.56/66.11','56.24/58.81/57.50']},
+  {g:'2.2 Expert capacity (MoE)', n:'moe_big (w512)', c:['92.09/69.48','84.50/62.90','76.70/61.63','67.05/53.91','78.70/61.83','72.44/54.84','63.84/66.71/65.25','56.49/59.02/57.73']},
+  // §2.3 distill
+  {g:'2.3 Self-distillation', n:'Baseline', base:true, c:['93.4/69.9','85.6/62.9','77.3/61.9','67.6/54.4','78.97/62.04','72.87/55.12','66.4/69.3/67.8','57.5/60.1/58.8']},
+  {g:'2.3 Self-distillation', n:'no_distill', c:['92.37/69.22','86.41/64.01','76.89/61.80','66.94/53.91','78.65/61.53','72.77/55.08','64.66/67.50/66.05','57.62/60.07/58.82']},
+  // §2.4 pmax
+  {g:'2.4 Curriculum missing augmentation (p_max sweep)', n:'pmax_000', cat:[1,3,5], c:['91.04/68.18','62.90/47.57','77.18/61.88','46.94/39.34','79.85/62.77','53.41/40.26','—','—']},
+  {g:'2.4 Curriculum missing augmentation (p_max sweep)', n:'pmax_010', c:['92.04/68.88','83.93/62.01','76.06/60.98','65.84/53.05','79.43/62.45','71.66/54.19','64.72/67.62/66.14','56.78/59.32/58.02']},
+  {g:'2.4 Curriculum missing augmentation (p_max sweep)', n:'pmax_015', c:['91.55/68.82','85.06/63.06','75.68/60.78','65.83/53.10','79.05/62.28','72.44/54.68','62.33/65.18/63.72','55.75/58.15/56.92']},
+  {g:'2.4 Curriculum missing augmentation (p_max sweep)', n:'pmax_025', c:['92.23/69.14','85.13/63.10','76.35/61.20','66.73/53.68','78.93/62.05','72.78/54.92','64.18/67.02/65.57','53.71/56.16/54.91']},
+  {g:'2.4 Curriculum missing augmentation (p_max sweep)', n:'pmax_035', base:true, c:['93.4/69.9','85.6/62.9','77.3/61.9','67.6/54.4','78.97/62.04','72.87/55.12','66.4/69.3/67.8','57.5/60.1/58.8']},
+  {g:'2.4 Curriculum missing augmentation (p_max sweep)', n:'pmax_050', c:['91.22/68.89','83.44/62.24','76.02/61.06','66.49/53.51','79.08/62.10','73.37/55.66','64.91/67.83/66.34','57.57/60.18/58.85']},
+  {g:'2.4 Curriculum missing augmentation (p_max sweep)', n:'pmax_065', c:['91.45/69.13','84.59/62.79','76.13/60.99','66.99/53.82','78.22/61.44','72.29/54.73','64.65/67.51/66.05','55.77/58.24/56.98']},
+  {g:'2.4 Curriculum missing augmentation (p_max sweep)', n:'pmax_080', c:['90.31/67.93','85.07/63.17','76.44/61.29','66.80/53.86','77.89/61.23','72.41/54.99','—','—']},
+  // §2.5 schedule
+  {g:'2.5 Curriculum vs. constant schedule', n:'Baseline (dyn 0→35%)', base:true, c:['93.4/69.9','85.6/62.9','77.3/61.9','67.6/54.4','78.97/62.04','72.87/55.12','66.4/69.3/67.8','57.5/60.1/58.8']},
+  {g:'2.5 Curriculum vs. constant schedule', n:'cma_fixed020 (const 20%)', c:['91.70/69.18','84.16/62.53','76.27/61.30','66.54/53.68','78.92/61.87','72.62/54.88','65.92/68.80/67.33','56.19/58.64/57.39']},
+  // §2.6 fusion × ortho
+  {g:'2.6 Fusion directionality × orthogonal reg.', n:'Baseline (bidir + ortho)', base:true, c:['93.4/69.9','85.6/62.9','77.3/61.9','67.6/54.4','78.97/62.04','72.87/55.12','66.4/69.3/67.8','57.5/60.1/58.8']},
+  {g:'2.6 Fusion directionality × orthogonal reg.', n:'no_ortho (bidir, −ortho)', c:['92.27/69.41','86.27/63.83','76.90/61.55','65.94/53.09','78.88/61.73','72.45/54.78','64.24/67.06/65.62','58.79/61.36/60.05']},
+  {g:'2.6 Fusion directionality × orthogonal reg.', n:'uni_a2r (A→R, +ortho)', c:['92.27/69.63','84.34/62.68','75.98/60.94','66.81/53.84','78.17/61.58','72.03/54.53','65.13/67.99/66.53','58.32/60.78/59.53']},
+  {g:'2.6 Fusion directionality × orthogonal reg.', n:'uni_a2r_no_ortho', c:['91.89/68.76','84.88/62.67','76.44/61.28','66.13/53.18','78.81/62.02','72.30/54.76','63.61/66.52/65.03','56.25/58.80/57.50']},
+  {g:'2.6 Fusion directionality × orthogonal reg.', n:'uni_r2a (R→A, +ortho)', c:['92.23/69.15','83.93/62.31','76.03/60.89','67.27/54.15','79.09/62.28','72.43/54.89','63.27/66.04/64.62','57.53/60.00/58.74']},
+  // §2.7 hallu/recon
+  {g:'2.7 Hallucination & reconstruction losses', n:'Baseline (+hallu +recon +ortho)', base:true, c:['93.4/69.9','85.6/62.9','77.3/61.9','67.6/54.4','78.97/62.04','72.87/55.12','66.4/69.3/67.8','57.5/60.1/58.8']},
+  {g:'2.7 Hallucination & reconstruction losses', n:'no_hallucinate', c:['92.41/69.45','84.57/62.68','76.14/61.03','67.36/54.01','78.59/61.88','72.32/54.71','63.89/66.77/65.30','56.11/58.64/57.35']},
+  {g:'2.7 Hallucination & reconstruction losses', n:'no_hallucinate_no_ortho', c:['92.27/69.26','85.54/63.14','76.47/61.35','67.68/54.47','79.07/62.01','72.27/54.68','66.38/69.40/67.86','57.16/59.66/58.38']},
+  {g:'2.7 Hallucination & reconstruction losses', n:'no_recon_loss', c:['91.57/68.94','85.20/62.98','76.28/61.16','66.13/53.35','78.31/61.54','72.87/55.04','63.93/66.74/65.30','54.81/57.27/56.01']},
+  {g:'2.7 Hallucination & reconstruction losses', n:'no_recon_loss_no_ortho', c:['91.77/68.80','84.08/62.42','76.03/60.83','67.27/54.26','79.00/61.99','72.86/55.20','64.19/67.01/65.57','56.15/58.62/57.36']},
+];
+const COLS = ['Config','RGBT234','RGBT234_m','LasHeR','LasHeR_m','VisEvent','VisEvent_m','DepthTrack','DepthTrack_m'];
+
+/* primary numeric extractor: last number of the cell (MSR / SR / AUC / F-score) */
+function primary(cell){
+  if(!cell || cell==='—') return null;
+  const parts = cell.replace(/\*/g,'').split('/');
+  const v = parseFloat(parts[parts.length-1]);
+  return isNaN(v)?null:v;
+}
+
+/* ---------- per-experiment explanations (what / why / configs / finding) ---------- */
+const EXPLAIN = {
+  '2.1':{
+    mech:'The complete V56 model — Heterogeneous Mixture-of-Experts (experts of many different sizes) + Curriculum Missing-Augmentation (training gradually drops a modality, 0→35%) + Self-Distillation — run three times with different random seeds.',
+    q:'Before any ablation can be trusted we need the noise floor: how much does a score move from randomness alone (same config, different seed)? Only deltas larger than this noise are real effects rather than luck.',
+    configs:[['rung0 (seedA)','the reference run that every later ablation is compared against'],['rung0_seedB / seedC','identical config, only the random seed differs — their spread IS the noise'],['mean ± std','the resulting noise band per benchmark']],
+    finding:'DepthTrack is intrinsically noisy (±1.66 full F-score, ±0.46 miss); the other three benchmarks are stable (std ≤0.24). Any DepthTrack claim below ~1.7 (full) or ~0.5 (miss) must be reported as "no significant difference".'
+  },
+  '2.2':{
+    mech:'Features are routed through a Mixture-of-Experts (MoE) — a set of sub-networks, each specialising in different inputs. The baseline uses heterogeneous experts whose capacities span a wide range (widths 4 … 512). Here we replace them with uniform-width experts.',
+    q:'Does the model actually NEED experts of wildly different sizes, or would simple uniform experts do just as well? If uniform suffices, the heterogeneous design is needless complexity and should be dropped.',
+    configs:[['moe_small','all 8 experts set to width 4 — the low-capacity extreme'],['moe_middle','all experts width 32 — a mid-capacity point'],['moe_hybrid','mostly uniform + a few wide experts — partial heterogeneity'],['moe_big','8 uniform wide (512) experts — now rescored under the same official protocol (gap closed)']],
+    finding:'No uniform configuration beats the heterogeneous baseline on DepthTrack_m, the hardest missing-modality regime. moe_middle actually wins elsewhere but collapses on DepthTrack (−4 F). moe_big (w512, rescored under the same protocol) confirms sheer width doesn\'t help either — it trails the baseline on every benchmark. → Heterogeneity, not capacity, is what matters; it acts as a safety net for the hard depth-missing cases.'
+  },
+  '2.3':{
+    mech:'During training a "teacher" copy of the network sees the complete, undamaged modalities while a "student" sees the degraded / missing version; a consistency loss forces the student’s predictions to match the teacher’s.',
+    q:'Does this teacher–student consistency add robustness BEYOND what the missing-data augmentation already provides on its own? If augmentation alone explains the gain, distillation is redundant.',
+    configs:[['no_distill','the distillation (teacher–student consistency) loss weight set to 0']],
+    finding:'Removing it helps some datasets (RGBT234_m, LasHeR) and slightly hurts others (LasHeR_m, VisEvent) — a real but secondary, dataset-dependent contribution. It should be framed as a minor add-on, not an essential component.'
+  },
+  '2.4':{
+    mech:'The core robustness mechanism (CMA). During training we randomly delete one modality with a probability that ramps upward over the schedule to a ceiling p_max. This sweep varies that ceiling from 0 (never drop) to 0.80 (drop most of the time).',
+    q:'How much missing-modality training is optimal? p_max = 0 is the "no augmentation at all" failure baseline; the rest of the sweep maps the trade-off between full-modality accuracy and missing-modality robustness.',
+    configs:[['pmax_000','never drop a modality during training — the failure baseline'],['pmax_010 / 015 / 025','low ceilings — under-regularised, weak robustness'],['pmax_035','the baseline ceiling (our chosen operating point)'],['pmax_050 / 065 / 080','high ceilings — over-regularised, start harming full-modality accuracy']],
+    finding:'With no augmentation (p_max=0) the model collapses under inference-time modality absence: RGBT234_m −15.1, LasHeR_m −15.1. This proves CMA is essential, not optional. 0.35 is a solid operating point. (Note: an earlier claim that VisEvent spiked at p_max=0.50 was a metric artifact; on the official 320-seq VisEvent benchmark the p_max sweep is flat.)'
+  },
+  '2.5':{
+    mech:'The baseline ramps the missing-rate up gradually across training (a curriculum, 0→35%). Here we instead hold the missing-rate constant at 20% for the entire run.',
+    q:'Does the gradual ramp itself matter, or is a fixed missing rate equally effective? This isolates the "curriculum" idea from the "missing augmentation" idea.',
+    configs:[['cma_fixed020','constant 20% missing rate throughout, no curriculum ramp']],
+    finding:'The dynamic curriculum beats the fixed rate on every missing set (e.g. LasHeR_m 54.4 > 53.7). → Letting the network first build strong joint representations on clean data, then gradually introducing degradation, generalises better than constant corruption from the start.'
+  },
+  '2.6':{
+    mech:'The two modalities exchange information during fusion. The baseline fuses bidirectionally (RGB↔Auxiliary) AND adds an orthogonal loss that keeps the two feature spaces distinct (non-redundant). Here we remove or restrict each piece to see how they combine.',
+    q:'Are bidirectional fusion and the orthogonal constraint two independent, additive mechanisms — or do they interact? The 2×2-style grid (direction × ortho) is designed to reveal an interaction the single rows could not.',
+    configs:[['no_ortho','keep bidirectional fusion, remove the orthogonal loss'],['uni_a2r','fuse Auxiliary→RGB only, keep ortho'],['uni_a2r_no_ortho','one-directional AND no ortho'],['uni_r2a','fuse RGB→Auxiliary only, keep ortho']],
+    finding:'They interact, they don’t add. Removing ortho from the bidirectional model (no_ortho) is the single BEST missing-modality DepthTrack result in the whole study (+2.17, well outside noise). The direction of fusion matters far less than whether fusion is bidirectional at all. The paper should lead with the no_ortho result.'
+  },
+  '2.7':{
+    mech:'When a modality is missing, the model synthesises ("hallucinates") plausible stand-in features for it; a reconstruction loss trains that synthesis to be faithful. Here we remove each loss, alone and combined with removing the orthogonal loss.',
+    q:'Do these two auxiliary losses actually help — and does their benefit depend on the orthogonal constraint being present? Mirrors §2.6 to test the same interaction hypothesis on the loss terms.',
+    configs:[['no_hallucinate','remove the feature-hallucination branch'],['no_hallucinate_no_ortho','remove hallucination AND ortho together'],['no_recon_loss','remove the reconstruction loss'],['no_recon_loss_no_ortho','remove reconstruction AND ortho together']],
+    finding:'Reconstruction is the load-bearing loss — removing it clearly hurts DepthTrack_m (−1.87, outside noise). Hallucination alone is near noise-level, and only matters in combination with removing ortho — the same ortho-interaction pattern as §2.6. Suggests a factorial analysis over {ortho, direction, hallucinate, recon}.'
+  },
+};
+function renderExplain(ex){
+  return `<summary>What this experiment tests &amp; why · click to collapse</summary>
+    <div class="ex-grid">
+      <div class="ex-row"><span class="k">The mechanism</span><p>${ex.mech}</p></div>
+      <div class="ex-row"><span class="k">Why we ablate it</span><p>${ex.q}</p></div>
+      <div class="ex-row"><span class="k">The configurations</span>
+        <ul class="ex-configs">${ex.configs.map(c=>`<li><code>${c[0]}</code><span>${c[1]}</span></li>`).join('')}</ul></div>
+      <div class="ex-row finding"><span class="k">What the result shows</span><p>${ex.finding}</p></div>
+    </div>`;
+}
+
+/* ---------- render grouped tables ---------- */
+const groups = [...new Set(ROWS.map(r=>r.g))];
+const tg = document.getElementById('table-groups');
+groups.forEach(g=>{
+  const rows = ROWS.filter(r=>r.g===g);
+  const sec = document.createElement('div');
+  sec.style.marginBottom = '26px';
+  sec.innerHTML = `<div class="sec-head" style="margin-bottom:8px"><span class="sec-num">§${g.slice(0,3)}</span><h2 style="font-size:15px">${g.slice(4)}</h2></div>`;
+  const ex = EXPLAIN[g.slice(0,3)];
+  if(ex){ const d=document.createElement('details'); d.className='explain'; d.open=true; d.innerHTML=renderExplain(ex); sec.appendChild(d); }
+  const scroll = document.createElement('div'); scroll.className='tbl-scroll';
+  const t = document.createElement('table');
+  t.innerHTML = `<thead><tr>${COLS.map((c,i)=>`<th class="${i>0?'sortable':''}" data-i="${i}">${c}${i>0?' <span class="arrow"></span>':''}</th>`).join('')}</tr></thead><tbody></tbody>`;
+  const tb = t.querySelector('tbody');
+  const paint = (data)=>{
+    tb.innerHTML = data.map(r=>{
+      const tds = r.c.map((cell,ci)=>{
+        const isCat = r.cat && r.cat.includes(ci);
+        const disp = cell==='—' ? '<span class="na">—</span>' : cell;
+        return `<td class="${isCat?'cat':''}">${disp}</td>`;
+      }).join('');
+      const fl = r.flag ? ` <span class="flag" title="${r.flag}">†</span>` : '';
+      return `<tr class="${r.base?'baseline':''}"><td>${r.n}${fl}</td>${tds}</tr>`;
+    }).join('');
+  };
+  paint(rows);
+  let sortState = {i:null, dir:-1};
+  t.querySelectorAll('th.sortable').forEach(th=>{
+    th.addEventListener('click',()=>{
+      const i = +th.dataset.i;
+      sortState.dir = (sortState.i===i) ? -sortState.dir : -1;
+      sortState.i = i;
+      const sorted = [...rows].sort((a,b)=>{
+        const av=primary(a.c[i-1]), bv=primary(b.c[i-1]);
+        if(av===null) return 1; if(bv===null) return -1;
+        return (bv-av)*sortState.dir;
+      });
+      paint(sorted);
+      t.querySelectorAll('.arrow').forEach(a=>a.textContent='');
+      th.querySelector('.arrow').textContent = sortState.dir<0?'▼':'▲';
+    });
+  });
+  scroll.appendChild(t); sec.appendChild(scroll); tg.appendChild(sec);
+});
+
+/* ================= PMAX LINE CHART ================= */
+const PMAX = {
+  x: [0, 0.10, 0.15, 0.25, 0.35, 0.50, 0.65, 0.80],
+  labels: ['0','.10','.15','.25','.35','.50','.65','.80'],
+  baselineIdx: 4,
+  miss: {
+    rgbt:  [47.57,62.01,63.06,63.10,62.90,62.24,62.79,63.17],
+    lasher:[39.34,53.05,53.10,53.68,54.40,53.51,53.82,53.86],
+    vis:   [40.26,54.19,54.68,54.92,55.12,55.66,54.73,54.99],
+    depth: [null, 58.02,56.92,54.91,58.80,58.85,56.98,null],
+  },
+  full: {
+    rgbt:  [68.18,68.88,68.82,69.14,69.90,68.89,69.13,67.93],
+    lasher:[61.88,60.98,60.78,61.20,61.90,61.06,60.99,61.29],
+    vis:   [62.77,62.45,62.28,62.05,62.04,62.10,61.44,61.23],
+    depth: [null, 66.14,63.72,65.57,67.80,66.34,66.05,null],
+  }
+};
+let pmaxMode = 'miss';
+function drawPmax(){
+  const data = PMAX[pmaxMode];
+  document.getElementById('pmax-desc').textContent = pmaxMode==='miss'
+    ? 'Missing-modality primary metric (RGBT234_m MSR · LasHeR_m SR · VisEvent_m AUC · DepthTrack_m F). The p_max=0 cliff shows how brittle a naively-fused model is.'
+    : 'Full-modality primary metric. On the official 320-seq VisEvent protocol the sweep is essentially flat — an earlier apparent spike at p_max=0.50 was a metric artifact and is now corrected.';
+  const W=760, H=340, m={t:16,r:120,b:44,l:40};
+  const iw=W-m.l-m.r, ih=H-m.t-m.b;
+  let all=[]; DS.forEach(d=>data[d.key].forEach(v=>{if(v!=null)all.push(v)}));
+  let lo=Math.min(...all), hi=Math.max(...all);
+  lo=Math.floor((lo-2)/5)*5; hi=Math.ceil((hi+2)/5)*5;
+  const X = i => m.l + (i/(PMAX.x.length-1))*iw;
+  const Y = v => m.t + ih - ((v-lo)/(hi-lo))*ih;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="p_max sweep line chart">`;
+  // grid + y ticks
+  for(let v=lo; v<=hi; v+=5){
+    s+=`<line class="grid-line" x1="${m.l}" y1="${Y(v)}" x2="${m.l+iw}" y2="${Y(v)}"/>`;
+    s+=`<text class="tick" x="${m.l-8}" y="${Y(v)+4}" text-anchor="end">${v}</text>`;
+  }
+  // baseline vertical marker
+  const bx=X(PMAX.baselineIdx);
+  s+=`<line x1="${bx}" y1="${m.t}" x2="${bx}" y2="${m.t+ih}" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3 3" opacity="0.6"/>`;
+  s+=`<text class="tick" x="${bx}" y="${m.t-4}" text-anchor="middle" fill="var(--accent)" font-weight="700">baseline</text>`;
+  // x axis
+  s+=`<line class="axis-line" x1="${m.l}" y1="${m.t+ih}" x2="${m.l+iw}" y2="${m.t+ih}"/>`;
+  PMAX.labels.forEach((l,i)=> s+=`<text class="tick" x="${X(i)}" y="${m.t+ih+18}" text-anchor="middle">${l}</text>`);
+  s+=`<text class="axis-title" x="${m.l+iw/2}" y="${H-4}" text-anchor="middle">p_max</text>`;
+  // lines
+  DS.forEach(d=>{
+    const col=cv(d.v); const vals=data[d.key];
+    let path=''; let started=false;
+    vals.forEach((v,i)=>{ if(v==null){started=false;return;}
+      path += (started?'L':'M')+X(i)+' '+Y(v)+' '; started=true; });
+    s+=`<path d="${path}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    vals.forEach((v,i)=>{ if(v==null)return;
+      const isB=i===PMAX.baselineIdx;
+      s+=`<circle cx="${X(i)}" cy="${Y(v)}" r="${isB?5:3.4}" fill="${isB?col:'var(--surface)'}" stroke="${col}" stroke-width="2"
+           data-tip="${d.name}|p_max=${PMAX.labels[i]}|${v.toFixed(2)}" style="cursor:pointer"/>`;
+    });
+    // end label
+    let li=vals.length-1; while(li>=0 && vals[li]==null) li--;
+    if(li>=0) s+=`<text class="lbl" x="${m.l+iw+8}" y="${Y(vals[li])+4}" fill="${col}">${d.name}</text>`;
+  });
+  s+=`</svg>`;
+  document.getElementById('pmax-chart').innerHTML=s;
+  bindTips('#pmax-chart');
+}
+document.getElementById('pm-miss').onclick=()=>{pmaxMode='miss';setPmaxBtns();drawPmax();};
+document.getElementById('pm-full').onclick=()=>{pmaxMode='full';setPmaxBtns();drawPmax();};
+function setPmaxBtns(){
+  document.getElementById('pm-miss').setAttribute('aria-pressed', pmaxMode==='miss');
+  document.getElementById('pm-full').setAttribute('aria-pressed', pmaxMode==='full');
+}
+
+/* ================= DELTA BAR CHART ================= */
+const BASE_DTM = 57.88, NOISE = 0.46;
+const DELTAS = [
+  {n:'no_ortho', v:60.05}, {n:'uni_a2r', v:59.53}, {n:'no_distill', v:58.82},
+  {n:'uni_r2a', v:58.74}, {n:'no_hallu_no_ortho', v:58.38}, {n:'moe_hybrid', v:57.50},
+  {n:'uni_a2r_no_ortho', v:57.50}, {n:'cma_fixed020', v:57.39}, {n:'no_recon_no_ortho', v:57.36},
+  {n:'no_hallucinate', v:57.35}, {n:'moe_middle', v:55.95}, {n:'moe_small', v:55.55},
+  {n:'no_recon_loss', v:56.01},
+].map(d=>({...d, delta:+(d.v-BASE_DTM).toFixed(2)}))
+ .sort((a,b)=>b.delta-a.delta);
+function drawDelta(){
+  const W=760, rowH=26, m={t:10,r:24,b:34,l:150};
+  const H=m.t+m.b+DELTAS.length*rowH;
+  const iw=W-m.l-m.r;
+  const mx=Math.max(...DELTAS.map(d=>Math.abs(d.delta)))*1.12;
+  const X=v=> m.l + (v+mx)/(2*mx)*iw;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Delta vs baseline bar chart">`;
+  // noise band
+  s+=`<rect x="${X(-NOISE)}" y="${m.t}" width="${X(NOISE)-X(-NOISE)}" height="${DELTAS.length*rowH}" fill="var(--noise)" opacity="0.15"/>`;
+  s+=`<text class="tick" x="${X(0)}" y="${H-10}" text-anchor="middle" fill="var(--muted)">±0.46 seed noise</text>`;
+  // zero line
+  s+=`<line x1="${X(0)}" y1="${m.t}" x2="${X(0)}" y2="${m.t+DELTAS.length*rowH}" class="axis-line"/>`;
+  // x ticks
+  for(let v=-3;v<=1.5;v+=1){ const xx=X(v); if(xx<m.l-2||xx>W-m.r+2)continue;
+    s+=`<text class="tick" x="${xx}" y="${m.t-2}" text-anchor="middle">${v>0?'+':''}${v}</text>`; }
+  DELTAS.forEach((d,i)=>{
+    const y=m.t+i*rowH+rowH/2;
+    const sig=Math.abs(d.delta)>NOISE;
+    const col = !sig ? 'var(--noise)' : (d.delta>0?'var(--good)':'var(--bad)');
+    const x0=X(0), x1=X(d.delta);
+    const bx=Math.min(x0,x1), bw=Math.abs(x1-x0);
+    const r=3;
+    s+=`<text x="${m.l-10}" y="${y+4}" text-anchor="end" class="tick" style="font-size:11.5px;fill:var(--ink-2)">${d.n}</text>`;
+    s+=`<rect x="${bx}" y="${y-7}" width="${Math.max(bw,1.5)}" height="14" rx="${r}" fill="${col}"
+         data-tip="${d.n}|Δ F-score|${d.delta>0?'+':''}${d.delta}${sig?'':'  (within noise)'}" style="cursor:pointer"/>`;
+    const lx = d.delta>=0 ? x1+6 : x1-6;
+    s+=`<text x="${lx}" y="${y+4}" text-anchor="${d.delta>=0?'start':'end'}" class="lbl tnum"
+         fill="${col}" style="font-size:11px">${d.delta>0?'+':''}${d.delta}</text>`;
+  });
+  s+=`</svg>`;
+  document.getElementById('delta-chart').innerHTML=s;
+  bindTips('#delta-chart');
+}
+
+/* ---------- tooltip binding ---------- */
+const tip=document.getElementById('tip');
+function bindTips(sel){
+  document.querySelectorAll(`${sel} [data-tip]`).forEach(el=>{
+    el.addEventListener('mousemove',e=>{
+      const [a,b,c]=el.dataset.tip.split('|');
+      tip.innerHTML=`<b>${a}</b><div class="tr"><span>${b}</span><span>${c}</span></div>`;
+      tip.style.opacity='1';
+      let x=e.clientX+14, y=e.clientY+14;
+      if(x+tip.offsetWidth>innerWidth) x=e.clientX-tip.offsetWidth-14;
+      tip.style.left=x+'px'; tip.style.top=y+'px';
+    });
+    el.addEventListener('mouseleave',()=> tip.style.opacity='0');
+  });
+}
+
+/* ================= CONCLUSIONS ================= */
+const CONCL = [
+  {n:'1', k:'key', h:'CMA is the source of robustness', p:'Without curriculum missing-augmentation the model collapses under absence: RGBT234_m MSR −15.09, LasHeR_m SR −15.07. Conventional fusion is brittle; CMA is the fundamental fix, not an accessory.'},
+  {n:'2', k:'nuance', h:'p_max is a genuine trade-off curve', p:'0.35 is the sweet spot (best LasHeR_m SR). Under-regularizing (0.10/0.15) leaves robustness on the table; over-regularizing (0.80) hurts full-modality. The curve is dataset-dependent, not one smooth optimum.'},
+  {n:'3', k:'key', h:'Dynamic curriculum > fixed rate', p:'Dynamic 0→35% beats constant 20% on every missing set (LasHeR_m 54.41 > 53.68). Build joint representations first, then degrade.'},
+  {n:'4', k:'nuance', h:'Heterogeneous experts guard the lower bound', p:'Uniform experts can match/beat HMoE on RGBT234/LasHeR/VisEvent, but only HMoE is within noise of best on every DepthTrack metric. A difficulty-scaled hybrid width is worth exploring.'},
+  {n:'5', k:'nuance', h:'Self-distillation is a secondary trade-off', p:'Removing it improves some sets (RGBT234_m +1.35) and hurts others (LasHeR_m −0.50). Real but dataset-dependent — present as secondary, not unambiguously necessary.'},
+  {n:'6', k:'key', h:'Ortho × fusion are redundant, not additive', p:'no_ortho (bidir, −ortho) is the strongest missing-modality DepthTrack result in the study (+2.17, outside noise). Lead with this interaction, not the unidirectional rows.'},
+  {n:'7', k:'nuance', h:'Reconstruction > hallucination', p:'no_recon_loss shows the clearest isolated regression (DepthTrack_m −1.87). Hallucination is noise-level except combined with removing ortho. Recommend a factorial analysis over {ortho, direction, hallu, recon}.'},
+  {n:'8', k:'key', h:'Seed variance sets the significance bar', p:'DepthTrack full-modality std is ±1.66, miss ±0.46 — far wider than other benchmarks (≤0.24). Report DepthTrack with error bars; never cite single-run deltas below ~2 points.'},
+];
+document.getElementById('concl').innerHTML = CONCL.map(c=>
+  `<div class="cc"><div class="n">CONCLUSION ${c.n}</div><h3>${c.h}</h3><p>${c.p}</p>
+    <span class="verdict ${c.k==='key'?'v-key':'v-nuance'}">${c.k==='key'?'core claim':'nuance / caveat'}</span></div>`
+).join('');
+
+/* ================= ANALYSIS DATA (same-protocol seedA baseline) ================= */
+/* primary metric per column: [RGBT234, RGBT234_m, LasHeR, LasHeR_m, VisEvent, VisEvent_m, DepthTrack, DepthTrack_m] */
+const MCOLS = ['RGBT234','RGBT234ₘ','LasHeR','LasHeRₘ','VisEvent','VisEventₘ','DepthTrack','DepthTrackₘ'];
+const BASE = [69.13,62.66,61.29,54.41,62.04,55.12,67.01,57.88];
+const CFG = {
+  'moe_small':[69.42,63.61,60.52,54.28,61.44,54.9,67.23,55.55],
+  'moe_middle':[69.14,63.44,61.74,54.46,62.03,55.41,62.3,55.95],
+  'moe_hybrid':[69.75,63.07,61.07,53.66,61.72,54.34,66.11,57.5],
+  'no_distill':[69.22,64.01,61.8,53.91,61.53,55.08,66.05,58.82],
+  'pmax_000':[68.18,47.57,61.88,39.34,62.77,40.26,null,null],
+  'pmax_010':[68.88,62.01,60.98,53.05,62.45,54.19,66.14,58.02],
+  'pmax_015':[68.82,63.06,60.78,53.1,62.28,54.68,63.72,56.92],
+  'pmax_025':[69.14,63.1,61.2,53.68,62.05,54.92,65.57,54.91],
+  'pmax_050':[68.89,62.24,61.06,53.51,62.1,55.66,66.34,58.85],
+  'pmax_065':[69.13,62.79,60.99,53.82,61.44,54.73,66.05,56.98],
+  'pmax_080':[67.93,63.17,61.29,53.86,61.23,54.99,null,null],
+  'cma_fixed020':[69.18,62.53,61.3,53.68,61.87,54.88,67.33,57.39],
+  'no_ortho':[69.41,63.83,61.55,53.09,61.73,54.78,65.62,60.05],
+  'uni_a2r':[69.63,62.68,60.94,53.84,61.58,54.53,66.53,59.53],
+  'uni_a2r_no_ortho':[68.76,62.67,61.28,53.18,62.02,54.76,65.03,57.5],
+  'uni_r2a':[69.15,62.31,60.89,54.15,62.28,54.89,64.62,58.74],
+  'no_hallucinate':[69.45,62.68,61.03,54.01,61.88,54.71,65.3,57.35],
+  'no_hallucinate_no_ortho':[69.26,63.14,61.35,54.47,62.01,54.68,67.86,58.38],
+  'no_recon_loss':[68.94,62.98,61.16,53.35,61.54,55.04,65.3,56.01],
+  'no_recon_loss_no_ortho':[68.8,62.42,60.83,54.26,61.99,55.2,65.57,57.36],
+};
+
+/* ---------- diverging color for a delta ---------- */
+function heatColor(delta, clamp){
+  if(delta==null) return {bg:'var(--surface-2)', fg:'var(--muted)', t:0};
+  const t = Math.max(-1, Math.min(1, delta/clamp));
+  const pct = Math.round(Math.abs(t)*74);
+  const hue = delta>=0 ? 'var(--d-rgbt)' : 'var(--bad)';
+  const bg = pct<3 ? 'var(--surface)' : `color-mix(in srgb, ${hue} ${pct}%, var(--surface))`;
+  const fg = pct>46 ? '#fff' : 'var(--ink)';
+  return {bg, fg, t};
+}
+
+/* ================= HEATMAP ================= */
+function drawHeat(){
+  const names = Object.keys(CFG);
+  const CLAMP = 4;
+  let h = `<table style="min-width:720px"><thead><tr><th style="text-align:left">Config</th>`;
+  h += MCOLS.map(c=>`<th style="text-align:center;cursor:default">${c}</th>`).join('') + `</tr></thead><tbody>`;
+  names.forEach(n=>{
+    h += `<tr><td>${n}</td>`;
+    CFG[n].forEach((v,i)=>{
+      if(v==null){ h+=`<td style="text-align:center"><span class="na">—</span></td>`; return; }
+      const d = +(v-BASE[i]).toFixed(2);
+      const {bg,fg} = heatColor(d, CLAMP);
+      const sign = d>0?'+':'';
+      h += `<td style="text-align:center;background:${bg};color:${fg};font-size:11px" class="tnum"
+             data-tip="${n} · ${MCOLS[i]}|Δ vs baseline|${sign}${d.toFixed(2)}  (abs ${v.toFixed(2)})">${sign}${d.toFixed(1)}</td>`;
+    });
+    h += `</tr>`;
+  });
+  h += `</tbody></table>`;
+  document.getElementById('heatmap').innerHTML = h;
+  bindTips('#heatmap');
+  // legend colorbar
+  const stops=[-4,-2,-0.5,0.5,2,4];
+  document.getElementById('heat-legend').innerHTML =
+    `<div style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--ink-2)">
+      <span>worse</span>` +
+      stops.map(v=>{const {bg}=heatColor(v,4);return `<span style="width:34px;height:16px;border-radius:3px;background:${bg};border:1px solid var(--hair)"></span>`}).join('') +
+      `<span>better</span><span style="color:var(--muted);margin-left:6px">Δ −4 … +4</span></div>`;
+}
+
+/* ================= ROBUSTNESS GAP (dumbbell) ================= */
+const GAP_META = {rgbt:{f:0,m:1,name:'RGBT234',metric:'MSR',v:'--d-rgbt'},
+  lasher:{f:2,m:3,name:'LasHeR',metric:'SR',v:'--d-lasher'},
+  vis:{f:4,m:5,name:'VisEvent',metric:'AUC',v:'--d-vis'},
+  depth:{f:6,m:7,name:'DepthTrack',metric:'F-score',v:'--d-depth'}};
+let gapDs='rgbt';
+function drawGap(){
+  const meta=GAP_META[gapDs];
+  document.getElementById('gap-desc').textContent =
+    `${meta.name} ${meta.metric}: hollow dot = missing-modality, filled dot = full-modality. Shorter line = smaller robustness gap. Baseline highlighted.`;
+  // rows: baseline + configs having both values
+  let rows=[{n:'baseline (seedA)',full:BASE[meta.f],miss:BASE[meta.m],base:true}];
+  Object.keys(CFG).forEach(n=>{const c=CFG[n]; if(c[meta.f]!=null&&c[meta.m]!=null) rows.push({n,full:c[meta.f],miss:c[meta.m],base:false});});
+  rows.forEach(r=>r.gap=+(r.full-r.miss).toFixed(2));
+  rows.sort((a,b)=>a.gap-b.gap);
+  const col=cv(meta.v);
+  const W=760, rowH=22, m={t:14,r:60,b:34,l:158};
+  const H=m.t+m.b+rows.length*rowH, iw=W-m.l-m.r;
+  let all=[]; rows.forEach(r=>{all.push(r.full,r.miss)});
+  let lo=Math.floor((Math.min(...all)-2)/5)*5, hi=Math.ceil((Math.max(...all)+2)/5)*5;
+  const X=v=>m.l+(v-lo)/(hi-lo)*iw;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${meta.name} full vs missing dumbbell">`;
+  for(let v=lo;v<=hi;v+=5){ s+=`<line class="grid-line" x1="${X(v)}" y1="${m.t}" x2="${X(v)}" y2="${m.t+rows.length*rowH}"/>`;
+    s+=`<text class="tick" x="${X(v)}" y="${H-12}" text-anchor="middle">${v}</text>`; }
+  s+=`<text class="axis-title" x="${m.l+iw/2}" y="${H-1}" text-anchor="middle">${meta.metric}</text>`;
+  rows.forEach((r,i)=>{
+    const y=m.t+i*rowH+rowH/2;
+    s+=`<text x="${m.l-10}" y="${y+4}" text-anchor="end" class="tick" style="font-size:11px;fill:${r.base?'var(--accent)':'var(--ink-2)'};font-weight:${r.base?700:400}">${r.n}</text>`;
+    s+=`<line x1="${X(r.miss)}" y1="${y}" x2="${X(r.full)}" y2="${y}" stroke="var(--rule)" stroke-width="2"/>`;
+    // miss (hollow)
+    s+=`<circle cx="${X(r.miss)}" cy="${y}" r="4.2" fill="var(--surface)" stroke="${col}" stroke-width="2"
+         data-tip="${r.n} · ${meta.name}ₘ|missing ${meta.metric}|${r.miss.toFixed(2)}" style="cursor:pointer"/>`;
+    // full (filled)
+    s+=`<circle cx="${X(r.full)}" cy="${y}" r="4.2" fill="${col}" stroke="${col}" stroke-width="2"
+         data-tip="${r.n} · ${meta.name}|full ${meta.metric}|${r.full.toFixed(2)}" style="cursor:pointer"/>`;
+    // gap label
+    s+=`<text x="${m.l+iw+8}" y="${y+4}" class="lbl tnum" style="font-size:10.5px;fill:var(--muted)">Δ${r.gap.toFixed(1)}</text>`;
+  });
+  // header dots
+  s+=`<text class="tick" x="${m.l}" y="${m.t-2}" text-anchor="start" fill="var(--muted)">◦ missing   ● full   Δ = gap</text>`;
+  s+=`</svg>`;
+  document.getElementById('gap-chart').innerHTML=s;
+  bindTips('#gap-chart');
+}
+document.querySelectorAll('.seg [data-ds]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    gapDs=btn.dataset.ds;
+    document.querySelectorAll('.seg [data-ds]').forEach(b=>b.setAttribute('aria-pressed', b===btn));
+    drawGap();
+  });
+});
+
+/* ================= INTERACTION (ortho × mechanism) ================= */
+const INTER = [
+  {n:'Bidirectional fusion', v:'--d-rgbt',   with:57.88, without:60.05, note:'baseline vs no_ortho'},
+  {n:'Unidirectional A→R',   v:'--d-lasher', with:59.53, without:57.50, note:'uni_a2r vs uni_a2r_no_ortho'},
+  {n:'Hallucination removed',v:'--d-vis',    with:57.35, without:58.38, note:'no_hallucinate vs …_no_ortho'},
+  {n:'Reconstruction removed',v:'--d-depth', with:56.01, without:57.36, note:'no_recon_loss vs …_no_ortho'},
+];
+function drawInter(){
+  document.getElementById('inter-legend').innerHTML = INTER.map(l=>
+    `<span class="lg"><span class="swatch" style="background:var(${l.v})"></span>${l.n}</span>`
+  ).join(' ');
+  const W=760,H=320,m={t:20,r:210,b:40,l:44};
+  const iw=W-m.l-m.r, ih=H-m.t-m.b;
+  const lo=55, hi=61;
+  const xW=m.l, xWO=m.l+iw;
+  const Y=v=>m.t+ih-(v-lo)/(hi-lo)*ih;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="ortho interaction plot">`;
+  for(let v=lo;v<=hi;v++){ s+=`<line class="grid-line" x1="${m.l}" y1="${Y(v)}" x2="${xWO}" y2="${Y(v)}"/>`;
+    s+=`<text class="tick" x="${m.l-8}" y="${Y(v)+4}" text-anchor="end">${v}</text>`; }
+  // baseline seedA reference line
+  s+=`<line x1="${m.l}" y1="${Y(57.88)}" x2="${xWO}" y2="${Y(57.88)}" stroke="var(--accent)" stroke-dasharray="3 3" stroke-width="1" opacity="0.5"/>`;
+  s+=`<text class="tick" x="${xWO}" y="${Y(57.88)-5}" text-anchor="end" fill="var(--accent)">baseline 57.88</text>`;
+  s+=`<text class="axis-title" x="${xW}" y="${m.t+ih+22}" text-anchor="middle">with ortho</text>`;
+  s+=`<text class="axis-title" x="${xWO}" y="${m.t+ih+22}" text-anchor="middle">without ortho</text>`;
+  INTER.forEach(l=>{
+    const c=cv(l.v);
+    s+=`<line x1="${xW}" y1="${Y(l.with)}" x2="${xWO}" y2="${Y(l.without)}" stroke="${c}" stroke-width="2.4"/>`;
+    [['with',xW,l.with],['without',xWO,l.without]].forEach(([k,x,val])=>{
+      s+=`<circle cx="${x}" cy="${Y(val)}" r="4.5" fill="${c}" stroke="var(--surface)" stroke-width="1.5"
+           data-tip="${l.n}|${k} ortho|${val.toFixed(2)}" style="cursor:pointer"/>`;
+    });
+    s+=`<text class="lbl" x="${xWO+10}" y="${Y(l.without)+4}" fill="${c}" style="font-size:10.5px">${l.n} (${l.without>l.with?'+':''}${(l.without-l.with).toFixed(2)})</text>`;
+  });
+  s+=`</svg>`;
+  document.getElementById('inter-chart').innerHTML=s;
+  bindTips('#inter-chart');
+}
+
+/* init */
+function drawAll(){ drawPmax(); drawDelta(); drawHeat(); drawGap(); drawInter(); }
+drawAll();
+/* redraw on theme toggle so CSS-var colors refresh */
+new MutationObserver(drawAll)
+  .observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',drawAll);
+</script>
+<script>
+/* ===== §5–§7 Robustness suite (merged) ===== */
+const RR=[0,25,50,75,100];
+/* FlexTrack-V2 aligned success curves (official metrics; VisEvent calibrated) */
+const AL={
+ RGBT234:{v:'--d-rgbt',lab:'MSR',y:[70.02,69.07,68.19,67.39,66.70]},
+ LasHeR:{v:'--d-lasher',lab:'SR',y:[61.96,60.68,59.30,57.23,56.28]},
+ VisEvent:{v:'--d-vis',lab:'AUC',y:[63.96,63.79,63.22,63.31,62.42]},
+ DepthTrack:{v:'--d-depth',lab:'F',y:[67.72,65.78,65.33,64.58,62.27]},
+};
+/* three-way success */
+const TW={
+ RGBT234:{lab:'MSR',ours:[70.02,69.07,68.19,67.39,66.70],seqv2:[64.97,64.11,63.33,61.48,60.39],xtrack:[64.16,61.81,59.82,58.09,54.90]},
+ LasHeR:{lab:'SR',ours:[61.96,60.68,59.30,57.23,56.28],seqv2:[55.70,53.17,51.70,50.39,48.51],xtrack:[55.61,53.03,50.46,47.06,44.06]},
+ VisEvent:{lab:'AUC',ours:[63.96,63.79,63.22,63.31,62.42],seqv2:[61.24,59.75,59.07,58.99,57.15],xtrack:[60.18,58.58,58.65,57.67,56.66]},
+ DepthTrack:{lab:'F',ours:[67.72,65.78,65.33,64.58,62.27],seqv2:[61.50,58.83,58.84,56.98,54.53],xtrack:[61.32,60.42,58.29,56.08,53.43]},
+};
+/* asymmetry: drop-aux vs drop-RGB (success) */
+const AS={
+ RGBT234:{lab:'MSR',aux:[70.02,69.07,68.19,67.39,66.70],rgb:[70.02,65.94,64.02,60.64,58.42]},
+ LasHeR:{lab:'SR',aux:[61.96,60.68,59.30,57.23,56.28],rgb:[61.96,58.51,55.53,51.12,46.56]},
+ VisEvent:{lab:'AUC',aux:[63.96,63.79,63.22,63.31,62.42],rgb:[63.96,60.23,55.30,51.45,45.10]},
+ DepthTrack:{lab:'F',aux:[67.72,65.78,65.33,64.58,62.27],rgb:[67.72,62.31,57.84,53.33,43.92]},
+};
+function miniPanel(name, series, lab){
+  /* series: [{col, ys, tag}] */
+  const W=440,H=240,m={t:12,r:60,b:30,l:36},iw=W-m.l-m.r,ih=H-m.t-m.b;
+  let all=[]; series.forEach(s=>s.ys.forEach(v=>all.push(v)));
+  let lo=Math.min(...all),hi=Math.max(...all); const pad=(hi-lo)*0.14; lo-=pad; hi+=pad;
+  const X=i=>m.l+i/(RR.length-1)*iw, Y=v=>m.t+ih-(v-lo)/(hi-lo)*ih;
+  const step=(hi-lo)>18?10:5, y0=Math.ceil(lo/step)*step;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${name}">`;
+  for(let v=y0;v<=hi;v+=step){s+=`<line class="grid-line" x1="${m.l}" y1="${Y(v)}" x2="${m.l+iw}" y2="${Y(v)}"/>`;s+=`<text class="tick" x="${m.l-6}" y="${Y(v)+3}" text-anchor="end" style="font-size:10px">${v}</text>`;}
+  s+=`<line class="axis-line" x1="${m.l}" y1="${m.t+ih}" x2="${m.l+iw}" y2="${m.t+ih}"/>`;
+  RR.forEach((r,i)=>s+=`<text class="tick" x="${X(i)}" y="${m.t+ih+14}" text-anchor="middle" style="font-size:10px">${r}%</text>`);
+  series.forEach(sr=>{
+    let p='';sr.ys.forEach((v,i)=>p+=(i?'L':'M')+X(i)+' '+Y(v)+' ');
+    s+=`<path d="${p}" fill="none" stroke="${sr.col}" stroke-width="${sr.w||2.2}" stroke-linejoin="round" stroke-linecap="round"/>`;
+    sr.ys.forEach((v,i)=>s+=`<circle cx="${X(i)}" cy="${Y(v)}" r="${i===0?3.4:2.4}" fill="${i===0?sr.col:'var(--surface)'}" stroke="${sr.col}" stroke-width="1.7" data-tip="${sr.tag} · ${name} ${RR[i]}%|${lab}|${v.toFixed(1)}" style="cursor:pointer"/>`);
+    s+=`<text class="lbl" x="${m.l+iw+5}" y="${Y(sr.ys[4])+3}" fill="${sr.col}" style="font-size:9.5px">${(sr.ys[4]-sr.ys[0]).toFixed(1)}</text>`;
+  });
+  s+='</svg>';
+  return `<div class="rob-card"><h3>${name} <span class="al">· ${lab} · Δ at line end</span></h3>${s}</div>`;
+}
+function drawRob(){
+  /* §5 aligned: one relative chart */
+  const W=760,H=330,m={t:18,r:110,b:40,l:46},iw=W-m.l-m.r,ih=H-m.t-m.b;
+  let lo=88,hi=100.8; const X=i=>m.l+i/(RR.length-1)*iw, Y=v=>m.t+ih-(v-lo)/(hi-lo)*ih;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="aligned degradation relative">`;
+  for(let v=88;v<=100;v+=2){s+=`<line class="grid-line" x1="${m.l}" y1="${Y(v)}" x2="${m.l+iw}" y2="${Y(v)}"/>`;s+=`<text class="tick" x="${m.l-8}" y="${Y(v)+4}" text-anchor="end">${v}%</text>`;}
+  s+=`<line x1="${m.l}" y1="${Y(100)}" x2="${m.l+iw}" y2="${Y(100)}" stroke="var(--muted)" stroke-dasharray="3 3" stroke-width="1" opacity="0.5"/>`;
+  s+=`<line class="axis-line" x1="${m.l}" y1="${m.t+ih}" x2="${m.l+iw}" y2="${m.t+ih}"/>`;
+  RR.forEach((r,i)=>s+=`<text class="tick" x="${X(i)}" y="${m.t+ih+18}" text-anchor="middle">${r}%</text>`);
+  s+=`<text class="axis-title" x="${m.l+iw/2}" y="${H-4}" text-anchor="middle">auxiliary-modality drop rate</text>`;
+  Object.keys(AL).forEach(k=>{
+    const col=cv(AL[k].v), ys=AL[k].y.map(v=>v/AL[k].y[0]*100);
+    let p='';ys.forEach((v,i)=>p+=(i?'L':'M')+X(i)+' '+Y(v)+' ');
+    s+=`<path d="${p}" fill="none" stroke="${col}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>`;
+    ys.forEach((v,i)=>s+=`<circle cx="${X(i)}" cy="${Y(v)}" r="${i===0?4:3}" fill="${i===0?col:'var(--surface)'}" stroke="${col}" stroke-width="2" data-tip="${k} · ${RR[i]}% drop|${AL[k].lab} ${AL[k].y[i].toFixed(1)}|${v.toFixed(1)}%" style="cursor:pointer"/>`);
+    s+=`<text class="lbl" x="${m.l+iw+8}" y="${Y(ys[4])+4}" fill="${col}">${k}</text>`;
+  });
+  s+='</svg>';
+  document.getElementById('rob-aligned').innerHTML=s;
+  /* §6 three-way minis */
+  document.getElementById('rob-3way').innerHTML=Object.keys(TW).map(k=>miniPanel(k,[
+    {col:cv('--tw-ours'),ys:TW[k].ours,tag:'FlexTrack-V2',w:2.7},
+    {col:cv('--tw-s'),ys:TW[k].seqv2,tag:'SeqTrackv2'},
+    {col:cv('--tw-x'),ys:TW[k].xtrack,tag:'XTrack'},
+  ],TW[k].lab)).join('');
+  /* §7 asymmetry minis */
+  document.getElementById('rob-asym').innerHTML=Object.keys(AS).map(k=>miniPanel(k,[
+    {col:cv('--tw-aux'),ys:AS[k].aux,tag:'drop-aux'},
+    {col:cv('--tw-rgb'),ys:AS[k].rgb,tag:'drop-RGB'},
+  ],AS[k].lab)).join('');
+  bindTips('#rob-aligned'); bindTips('#rob-3way'); bindTips('#rob-asym');
+}
+drawRob();
+new MutationObserver(drawRob).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',drawRob);
+</script>

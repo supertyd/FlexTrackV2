@@ -1,0 +1,44 @@
+{
+  "config": "flextrackv2_l224_56",
+  "status": "train_failed",
+  "host": "bolt-qad3e9trm9-u2mx7i7cwc",
+  "RGBT234": {
+    "auc": 67.26,
+    "pr": 90.4
+  },
+  "RGBT234_miss": {
+    "auc": 60.42,
+    "pr": 84.07
+  },
+  "LasHeR": {
+    "auc": 57.62,
+    "pr": 69.44
+  },
+  "LasHeR_miss": {
+    "auc": 53.15,
+    "pr": 63.38
+  },
+  "VisEvent": {
+    "auc": 64.26,
+    "pr": 76.85
+  },
+  "VisEvent_miss": {
+    "auc": 55.11,
+    "pr": 68.24
+  },
+  "DepthTrack": {
+    "precision": 67.5,
+    "recall": 70.45,
+    "fscore": 68.95
+  },
+  "DepthTrack_miss": {
+    "precision": 58.28,
+    "recall": 60.6,
+    "fscore": 59.42
+  },
+  "VOT22RGBD": {
+    "eao": 76.74,
+    "accuracy": 83.54,
+    "robustness": 91.7
+  }
+}

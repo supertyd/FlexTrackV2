@@ -1,0 +1,23 @@
+{
+  "round": 4,
+  "params": {
+    "upt": 0.77,
+    "uph": 0.81,
+    "inter": 55,
+    "mb": 517
+  },
+  "metrics": {
+    "Pr": 57.53250451599064,
+    "Re": 60.098073643583035,
+    "F": 58.78731104443481
+  },
+  "avg": 58.805963068002825,
+  "target": {
+    "Pr": 59.6,
+    "Re": 56.1,
+    "F": 57.8
+  },
+  "target_avg": 57.833333333333336,
+  "beats_flextrack_on_every_metric": false,
+  "beats_flextrack_on_average": true
+}

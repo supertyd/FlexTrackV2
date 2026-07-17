@@ -1,0 +1,244 @@
+<style>
+  :root{
+    --plane:#eef0f2; --surface:#f9fafb; --surface-2:#f2f4f6;
+    --ink:#10151b; --ink-2:#4b5560; --muted:#7c8792;
+    --grid:#e0e4e8; --rule:#d3d9df; --hair:rgba(16,21,27,0.09);
+    --accent:#2f6f8f; --accent-soft:#e2edf2;
+    --d-rgbt:#2a78d6; --d-lasher:#4a3aa7; --d-vis:#eb6834; --d-depth:#1baf7a;
+    --good:#0f8a2f; --bad:#d03b3b;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --sh:0 1px 2px rgba(16,21,27,.04),0 4px 16px rgba(16,21,27,.05);
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --plane:#0b0e11; --surface:#14181c; --surface-2:#1a1f24;
+    --ink:#f3f5f7; --ink-2:#b7c0c9; --muted:#7e8893;
+    --grid:#242a30; --rule:#2c333a; --hair:rgba(255,255,255,0.10);
+    --accent:#5fb0d0; --accent-soft:#16333f;
+    --d-rgbt:#3987e5; --d-lasher:#9085e9; --d-vis:#f0774a; --d-depth:#22b884;
+    --good:#2fb551; --bad:#e66767; --sh:none;
+  }}
+  :root[data-theme="dark"]{
+    --plane:#0b0e11; --surface:#14181c; --surface-2:#1a1f24;
+    --ink:#f3f5f7; --ink-2:#b7c0c9; --muted:#7e8893;
+    --grid:#242a30; --rule:#2c333a; --hair:rgba(255,255,255,0.10);
+    --accent:#5fb0d0; --accent-soft:#16333f;
+    --d-rgbt:#3987e5; --d-lasher:#9085e9; --d-vis:#f0774a; --d-depth:#22b884;
+    --good:#2fb551; --bad:#e66767; --sh:none;
+  }
+  :root[data-theme="light"]{
+    --plane:#eef0f2; --surface:#f9fafb; --surface-2:#f2f4f6;
+    --ink:#10151b; --ink-2:#4b5560; --muted:#7c8792;
+    --grid:#e0e4e8; --rule:#d3d9df; --hair:rgba(16,21,27,0.09);
+    --accent:#2f6f8f; --accent-soft:#e2edf2;
+    --d-rgbt:#2a78d6; --d-lasher:#4a3aa7; --d-vis:#eb6834; --d-depth:#1baf7a;
+    --good:#0f8a2f; --bad:#d03b3b; --sh:0 1px 2px rgba(16,21,27,.04),0 4px 16px rgba(16,21,27,.05);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--plane);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 24px 80px}
+  h1,h2{margin:0;text-wrap:balance}
+  header{padding:40px 0 24px;border-bottom:1px solid var(--rule)}
+  .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  h1{font-size:29px;font-weight:680;letter-spacing:-.01em;margin:10px 0 6px}
+  .sub{color:var(--ink-2);max-width:70ch}
+  .setting{margin-top:18px;display:flex;flex-wrap:wrap;gap:8px 10px;font-family:var(--mono);font-size:12px}
+  .chip{background:var(--surface-2);border:1px solid var(--hair);padding:4px 10px;border-radius:999px;color:var(--ink-2)}
+  .chip b{color:var(--ink);font-weight:600}
+  section{margin-top:34px}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:6px}
+  .sec-head h2{font-size:18px;font-weight:640}
+  .sec-note{color:var(--ink-2);font-size:13.5px;margin:0 0 14px;max-width:82ch}
+  .card{background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:18px 20px 16px;box-shadow:var(--sh)}
+  .legend{display:flex;flex-wrap:wrap;gap:16px;margin:2px 0 6px}
+  .lg{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-family:var(--mono);color:var(--ink-2)}
+  .sw{width:14px;height:3px;border-radius:2px;flex:none}
+  .lg small{color:var(--muted)}
+  .toolbar{display:flex;gap:14px;margin:6px 0 4px;flex-wrap:wrap}
+  .seg{display:inline-flex;background:var(--surface-2);border-radius:8px;padding:3px;gap:2px;border:1px solid var(--hair)}
+  .seg button{font-family:var(--mono);font-size:12px;border:0;background:transparent;color:var(--ink-2);padding:5px 12px;border-radius:6px;cursor:pointer;transition:background .12s,color .12s}
+  .seg button[aria-pressed="true"]{background:var(--accent);color:#fff;font-weight:600}
+  .seg button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  svg{display:block;width:100%;height:auto;overflow:visible}
+  .grid-line{stroke:var(--grid);stroke-width:1}
+  .axis-line{stroke:var(--rule);stroke-width:1}
+  .tick{fill:var(--muted);font-family:var(--mono);font-size:11px}
+  .axis-title{fill:var(--ink-2);font-family:var(--mono);font-size:11px}
+  .lbl{font-family:var(--mono);font-size:11px;font-weight:600}
+  .tip{position:fixed;pointer-events:none;z-index:50;opacity:0;transition:opacity .1s;background:var(--ink);color:var(--surface);font-family:var(--mono);font-size:11.5px;padding:8px 10px;border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,.28);max-width:240px}
+  :root[data-theme="dark"] .tip{background:#e9edf0;color:#0b0e11}
+  .tip .tr{display:flex;justify-content:space-between;gap:14px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+  .cc{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:15px 17px;box-shadow:var(--sh)}
+  .cc h3{font-size:14px;font-weight:620;margin:0 0 6px}
+  .cc p{margin:0;font-size:13px;color:var(--ink-2)}
+  .cc .big{font-family:var(--mono);font-weight:700;font-size:18px}
+  .tbl-scroll{overflow-x:auto;border:1px solid var(--hair);border-radius:12px;background:var(--surface);box-shadow:var(--sh)}
+  table{border-collapse:collapse;width:100%;font-size:12.5px}
+  thead th{background:var(--surface-2);font-family:var(--mono);font-weight:600;font-size:11px;color:var(--ink-2);text-align:right;padding:9px 12px;white-space:nowrap;border-bottom:1px solid var(--rule)}
+  thead th:first-child{text-align:left}
+  tbody td{padding:7px 12px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--grid);font-family:var(--mono);font-variant-numeric:tabular-nums}
+  tbody td:first-child{text-align:left;font-family:var(--sans);font-weight:550;color:var(--ink)}
+  tbody tr:last-child td{border-bottom:0}
+  .drop{font-weight:700}
+  footer{margin-top:36px;padding-top:18px;border-top:1px solid var(--rule);color:var(--muted);font-family:var(--mono);font-size:11.5px;line-height:1.7}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">FlexTrack-V2 · TPAMI · Robustness analysis</div>
+    <h1>Missing-Modality Degradation Curves</h1>
+    <p class="sub">How tracking accuracy degrades as the <b>auxiliary modality</b> (thermal / event / depth) is progressively dropped at inference — the same trained baseline, across four RGB-X benchmarks, under one identical protocol.</p>
+    <div class="setting">
+      <span class="chip">model <b>rung0 (V56 baseline)</b></span>
+      <span class="chip">drop-aux, keep-RGB, frame-0 full</span>
+      <span class="chip">ratios <b>0 / 25 / 50 / 75 / 100%</b></span>
+      <span class="chip">metric <b>box-overlap AUC / PR</b> (unified)</span>
+      <span class="chip">full test sets</span>
+    </div>
+  </header>
+
+  <section>
+    <div class="sec-head"><h2>Degradation vs. missing rate</h2></div>
+    <p class="sec-note">Each line is one benchmark. Flatter = more robust to losing that modality; steeper = the modality is more load-bearing. Switch between absolute score and degradation relative to full-modality (0%).</p>
+    <div class="card">
+      <div class="legend" id="legend"></div>
+      <div class="toolbar">
+        <div class="seg" role="group" aria-label="View">
+          <button id="v-rel" aria-pressed="true">Relative (%)</button>
+          <button id="v-abs" aria-pressed="false">Absolute</button>
+        </div>
+        <div class="seg" role="group" aria-label="Metric">
+          <button id="m-auc" aria-pressed="true">AUC (success)</button>
+          <button id="m-pr" aria-pressed="false">PR (precision)</button>
+        </div>
+      </div>
+      <div id="chart"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Conclusions</h2></div>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Full data</h2></div>
+    <div class="tbl-scroll"><table id="tbl"></table></div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>
+const DATA = {
+  RGBT234:   {aux:'thermal', v:'--d-rgbt',   n:234, auc:[63.33,63.68,62.83,62.25,60.93], pr:[84.13,84.17,82.55,81.81,79.37]},
+  LasHeR:    {aux:'thermal', v:'--d-lasher', n:245, auc:[52.99,51.25,50.00,48.23,46.72], pr:[62.93,60.39,58.59,56.18,54.12]},
+  VisEvent:  {aux:'event',   v:'--d-vis',    n:320, auc:[59.69,59.61,59.58,59.37,58.86], pr:[72.76,72.84,72.67,72.27,71.64]},
+  DepthTrack:{aux:'depth',   v:'--d-depth',  n:50,  auc:[63.49,60.54,61.82,59.93,60.65], pr:[74.57,71.12,72.62,70.36,71.11]},
+};
+const RATIOS=[0,25,50,75,100];
+const NAMES=Object.keys(DATA);
+const cv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+let view='rel', metric='auc';
+
+document.getElementById('legend').innerHTML = NAMES.map(k=>{
+  const d=DATA[k];
+  return `<span class="lg"><span class="sw" style="background:var(${d.v})"></span>${k} <small>${d.aux} · n=${d.n}</small></span>`;
+}).join('');
+
+const tip=document.getElementById('tip');
+function bindTips(){
+  document.querySelectorAll('#chart [data-tip]').forEach(el=>{
+    el.addEventListener('mousemove',e=>{
+      const [a,b,c]=el.dataset.tip.split('|');
+      tip.innerHTML=`<b>${a}</b><div class="tr"><span>${b}</span><span>${c}</span></div>`;
+      tip.style.opacity='1';let x=e.clientX+14,y=e.clientY+14;
+      if(x+tip.offsetWidth>innerWidth)x=e.clientX-tip.offsetWidth-14;
+      tip.style.left=x+'px';tip.style.top=y+'px';
+    });
+    el.addEventListener('mouseleave',()=>tip.style.opacity='0');
+  });
+}
+
+function series(k){
+  const raw=DATA[k][metric];
+  if(view==='abs') return raw.slice();
+  return raw.map(x=>x/raw[0]*100);
+}
+function draw(){
+  const W=820,H=420,m={t:20,r:118,b:52,l:52},iw=W-m.l-m.r,ih=H-m.t-m.b;
+  let all=[];NAMES.forEach(k=>series(k).forEach(v=>all.push(v)));
+  let lo=Math.min(...all),hi=Math.max(...all);
+  if(view==='rel'){lo=Math.min(lo,88);hi=Math.max(hi,100.5);}
+  const pad=(hi-lo)*0.12;lo-=pad;hi+=pad;
+  const X=i=>m.l+i/(RATIOS.length-1)*iw;
+  const Y=v=>m.t+ih-(v-lo)/(hi-lo)*ih;
+  const yStep=view==='rel'?2: (hi-lo>25?10:5);
+  const y0=Math.ceil(lo/yStep)*yStep;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="degradation curves">`;
+  for(let v=y0;v<=hi;v+=yStep){
+    s+=`<line class="grid-line" x1="${m.l}" y1="${Y(v)}" x2="${m.l+iw}" y2="${Y(v)}"/>`;
+    s+=`<text class="tick" x="${m.l-8}" y="${Y(v)+4}" text-anchor="end">${view==='rel'?v+'%':v}</text>`;
+  }
+  s+=`<line class="axis-line" x1="${m.l}" y1="${m.t+ih}" x2="${m.l+iw}" y2="${m.t+ih}"/>`;
+  RATIOS.forEach((r,i)=>s+=`<text class="tick" x="${X(i)}" y="${m.t+ih+18}" text-anchor="middle">${r}%</text>`);
+  s+=`<text class="axis-title" x="${m.l+iw/2}" y="${H-6}" text-anchor="middle">auxiliary-modality drop rate</text>`;
+  s+=`<text class="axis-title" transform="rotate(-90 14 ${m.t+ih/2})" x="14" y="${m.t+ih/2}" text-anchor="middle">${view==='rel'?'% of full-modality '+metric.toUpperCase():metric.toUpperCase()}</text>`;
+  // 100% reference line in relative view
+  if(view==='rel'){s+=`<line x1="${m.l}" y1="${Y(100)}" x2="${m.l+iw}" y2="${Y(100)}" stroke="var(--muted)" stroke-dasharray="3 3" stroke-width="1" opacity="0.5"/>`;}
+  NAMES.forEach(k=>{
+    const col=cv(DATA[k].v),ys=series(k);
+    let path='';ys.forEach((v,i)=>path+=(i?'L':'M')+X(i)+' '+Y(v)+' ');
+    s+=`<path d="${path}" fill="none" stroke="${col}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>`;
+    ys.forEach((v,i)=>{
+      const abs=DATA[k][metric][i];
+      s+=`<circle cx="${X(i)}" cy="${Y(v)}" r="3.6" fill="var(--surface)" stroke="${col}" stroke-width="2"
+        data-tip="${k} · ${RATIOS[i]}% drop|${metric.toUpperCase()} ${abs.toFixed(1)}|${view==='rel'?v.toFixed(1)+'%':''}" style="cursor:pointer"/>`;
+    });
+    s+=`<text class="lbl" x="${m.l+iw+8}" y="${Y(ys[ys.length-1])+4}" fill="${col}">${k}</text>`;
+  });
+  s+=`</svg>`;
+  document.getElementById('chart').innerHTML=s;bindTips();
+}
+const bVrel=document.getElementById('v-rel'),bVabs=document.getElementById('v-abs'),
+      bMauc=document.getElementById('m-auc'),bMpr=document.getElementById('m-pr');
+function setBtns(){
+  bVrel.setAttribute('aria-pressed',view==='rel');bVabs.setAttribute('aria-pressed',view==='abs');
+  bMauc.setAttribute('aria-pressed',metric==='auc');bMpr.setAttribute('aria-pressed',metric==='pr');
+}
+bVrel.onclick=()=>{view='rel';setBtns();draw()};
+bVabs.onclick=()=>{view='abs';setBtns();draw()};
+bMauc.onclick=()=>{metric='auc';setBtns();draw()};
+bMpr.onclick=()=>{metric='pr';setBtns();draw()};
+
+// findings cards (sorted by AUC drop)
+const drops=NAMES.map(k=>({k,aux:DATA[k].aux,drop:+(DATA[k].auc[0]-DATA[k].auc[4]).toFixed(1),rel:+((1-DATA[k].auc[4]/DATA[k].auc[0])*100).toFixed(1)})).sort((a,b)=>b.drop-a.drop);
+document.getElementById('cards').innerHTML =
+  `<div class="cc"><h3><span style="font-family:var(--mono);color:var(--accent)">1 · </span>Graceful degradation, no collapse</h3><p>Every benchmark declines <b>smoothly</b> as the auxiliary modality is removed — no cliff. Even at 100% drop (RGB-only) the model stays functional; the worst case is LasHeR at −11.8%. This is the core robustness result.</p></div>`
+  + `<div class="cc"><h3><span style="font-family:var(--mono);color:var(--accent)">2 · </span>Modality importance is dataset-dependent</h3><p>Same modality (thermal), very different reliance: <b style="color:var(--d-rgbt)">RGBT234 −2.4</b> vs <b style="color:var(--d-lasher)">LasHeR −6.3</b> — thermal is <b>2.6× more load-bearing</b> on the harder LasHeR. Importance isn't a property of the modality alone.</p></div>`
+  + `<div class="cc"><h3><span style="font-family:var(--mono);color:var(--accent)">3 · </span>Importance ranking</h3><p>${drops.map(d=>`${d.k} <b>−${d.drop}</b>`).join(' &nbsp;›&nbsp; ')}<br><small style="color:var(--muted)">AUC lost when the auxiliary modality is fully removed</small></p></div>`
+  + `<div class="cc"><h3><span style="font-family:var(--mono);color:var(--accent)">4 · </span>Event is near-redundant on VisEvent</h3><p class="big" style="color:var(--d-vis)">−0.8 AUC (−1.4%)</p><p>Dropping the entire event stream is within noise — <b>RGB alone carries the signal</b> here. Honest but double-edged: the event modality adds little on this benchmark for this model.</p></div>`
+  + `<div class="cc" style="grid-column:1/-1;border-left:3px solid var(--bad);background:color-mix(in srgb,var(--bad) 7%,var(--surface))"><h3 style="color:var(--bad)">⚠ Caveat — this does not yet prove <em>CMA</em> causes the robustness</h3><p>These are one model (rung0, which already includes the curriculum). Graceful degradation could be the architecture, not the training. To make the causal claim, overlay the same four curves for <b>pmax_000 (no CMA)</b>: if no-CMA is a cliff and CMA is graceful, the mechanism is proven. That comparison is the killer figure — and is still missing.</p></div>`;
+
+// table
+let th='<thead><tr><th>dataset</th><th>aux</th>'+RATIOS.map(r=>`<th>${r}%</th>`).join('')+'<th>Δ full→none</th></tr></thead><tbody>';
+let tb=NAMES.map(k=>{
+  const d=DATA[k],drop=(d.auc[0]-d.auc[4]).toFixed(1);
+  return `<tr><td>${k}</td><td style="color:var(--muted);font-family:var(--mono)">${d.aux}</td>`+
+    d.auc.map((a,i)=>`<td>${a.toFixed(1)}<span style="color:var(--muted)">/${d.pr[i].toFixed(1)}</span></td>`).join('')+
+    `<td class="drop" style="color:var(--bad)">−${drop}</td></tr>`;
+}).join('');
+document.getElementById('tbl').innerHTML=th+tb+'</tbody>';
+document.getElementById('tbl').insertAdjacentHTML('afterend','');
+
+document.getElementById('foot').innerHTML =
+  'Unified setting: built-in <code>_missR###</code> synthetic annotations (RGB always present; auxiliary modality zeroed per-frame with the stated probability; frame 0 never dropped), full test sets, evaluated under one box-overlap AUC/PR metric so all four benchmarks are directly comparable. '
+  + 'Cells show AUC/PR. rung0 = the V56 baseline. '
+  + 'Caveats: DepthTrack has only 50 test sequences → its curve is the noisiest (non-monotonic within noise). box-overlap AUC/PR is used for cross-dataset comparability and differs from each benchmark’s official metric (VisEvent OTB, DepthTrack VOT F-score) reported in the main results — trends, not absolute values, transfer. Single seed (rung0).';
+draw();setBtns();
+new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+matchMedia('(prefers-color-scheme:dark)').addEventListener('change',draw);
+</script>

@@ -1,0 +1,137 @@
+<style>
+  :root{
+    --plane:#eef0f2; --surface:#f9fafb; --surface-2:#f2f4f6;
+    --ink:#10151b; --ink-2:#4b5560; --muted:#7c8792;
+    --grid:#e0e4e8; --rule:#d3d9df; --hair:rgba(16,21,27,0.09);
+    --accent:#2f6f8f; --accent-soft:#e2edf2;
+    --mpr:#2a78d6; --msr:#eb6834; --good:#0f8a2f;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --sh:0 1px 2px rgba(16,21,27,.04),0 4px 16px rgba(16,21,27,.05);
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --plane:#0b0e11;--surface:#14181c;--surface-2:#1a1f24;--ink:#f3f5f7;--ink-2:#b7c0c9;--muted:#7e8893;
+    --grid:#242a30;--rule:#2c333a;--hair:rgba(255,255,255,0.10);--accent:#5fb0d0;--accent-soft:#16333f;
+    --mpr:#3987e5;--msr:#f0774a;--good:#2fb551;--sh:none;}}
+  :root[data-theme="dark"]{--plane:#0b0e11;--surface:#14181c;--surface-2:#1a1f24;--ink:#f3f5f7;--ink-2:#b7c0c9;--muted:#7e8893;--grid:#242a30;--rule:#2c333a;--hair:rgba(255,255,255,0.10);--accent:#5fb0d0;--accent-soft:#16333f;--mpr:#3987e5;--msr:#f0774a;--good:#2fb551;--sh:none;}
+  :root[data-theme="light"]{--plane:#eef0f2;--surface:#f9fafb;--surface-2:#f2f4f6;--ink:#10151b;--ink-2:#4b5560;--muted:#7c8792;--grid:#e0e4e8;--rule:#d3d9df;--hair:rgba(16,21,27,0.09);--accent:#2f6f8f;--accent-soft:#e2edf2;--mpr:#2a78d6;--msr:#eb6834;--good:#0f8a2f;--sh:0 1px 2px rgba(16,21,27,.04),0 4px 16px rgba(16,21,27,.05);}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--plane);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:860px;margin:0 auto;padding:0 24px 72px}
+  h1{margin:0;font-size:27px;font-weight:680;letter-spacing:-.01em;text-wrap:balance}
+  header{padding:38px 0 22px;border-bottom:1px solid var(--rule)}
+  .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  h1{margin-top:10px}
+  .sub{color:var(--ink-2);max-width:66ch;margin-top:6px}
+  .chips{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px 10px;font-family:var(--mono);font-size:12px}
+  .chip{background:var(--surface-2);border:1px solid var(--hair);padding:4px 10px;border-radius:999px;color:var(--ink-2)}
+  .chip b{color:var(--ink)}
+  .chip.ok{background:color-mix(in srgb,var(--good) 12%,var(--surface));border-color:color-mix(in srgb,var(--good) 30%,transparent);color:var(--good)}
+  section{margin-top:28px}
+  .card{background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:20px 22px 16px;box-shadow:var(--sh)}
+  .legend{display:flex;gap:18px;margin-bottom:8px}
+  .lg{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:12.5px;color:var(--ink-2)}
+  .sw{width:16px;height:3px;border-radius:2px}
+  svg{display:block;width:100%;height:auto;overflow:visible}
+  .grid-line{stroke:var(--grid);stroke-width:1}.axis-line{stroke:var(--rule);stroke-width:1}
+  .tick{fill:var(--muted);font-family:var(--mono);font-size:11px}
+  .axtitle{fill:var(--ink-2);font-family:var(--mono);font-size:11px}
+  .lbl{font-family:var(--mono);font-size:11.5px;font-weight:600}
+  .tip{position:fixed;pointer-events:none;z-index:9;opacity:0;transition:opacity .1s;background:var(--ink);color:var(--surface);font-family:var(--mono);font-size:11.5px;padding:8px 10px;border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,.28)}
+  :root[data-theme="dark"] .tip{background:#e9edf0;color:#0b0e11}
+  .tip .tr{display:flex;justify-content:space-between;gap:14px}
+  table{border-collapse:collapse;width:100%;font-size:13px;margin-top:6px}
+  th,td{padding:8px 12px;text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;border-bottom:1px solid var(--grid)}
+  th:first-child,td:first-child{text-align:left}
+  thead th{background:var(--surface-2);color:var(--ink-2);font-size:11px;border-bottom:1px solid var(--rule)}
+  tbody tr:last-child td{border-bottom:0}
+  .r0{color:var(--good);font-weight:700}
+  .note{color:var(--ink-2);font-size:13px;margin-top:14px;max-width:80ch}
+  footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--rule);color:var(--muted);font-family:var(--mono);font-size:11.5px;line-height:1.7}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">FlexTrack-V2 · TPAMI · Missing-modality robustness</div>
+    <h1>RGBT234 — Thermal-Missing Degradation</h1>
+    <p class="sub">Tracking accuracy of FlexTrack-V2 as the <b>thermal</b> modality is progressively dropped at inference (0 → 100%), on the full RGBT234 test set under the official MPR/MSR protocol.</p>
+    <div class="chips">
+      <span class="chip">model <b>FlexTrack-V2 (b224, V54 weights)</b></span>
+      <span class="chip">234 sequences</span>
+      <span class="chip">official <b>MPR / MSR</b></span>
+      <span class="chip ok">R0 = 93.37/70.02 = SOTA ✓ aligned</span>
+    </div>
+  </header>
+
+  <section>
+    <div class="card">
+      <div class="legend">
+        <span class="lg"><span class="sw" style="background:var(--mpr)"></span>MPR (precision)</span>
+        <span class="lg"><span class="sw" style="background:var(--msr)"></span>MSR (success)</span>
+      </div>
+      <div id="chart"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="card">
+      <table>
+        <thead><tr><th>thermal drop</th><th>MPR</th><th>MSR</th><th>Δ MPR</th><th>Δ MSR</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <p class="note"><b>Reading:</b> a graceful, monotonic decline — losing the thermal modality entirely (RGB-only) costs <b>−4.22 MPR / −3.32 MSR</b>, not a collapse. The model degrades smoothly and stays functional on RGB alone. R0 (full modality) matches the reported SOTA exactly, so this curve is on the same model, thresholds, and metric as the main results.</p>
+    </div>
+  </section>
+
+  <footer>
+    Setting: FlexTrack-V2 = V54-trained checkpoint + V56 grid-search test thresholds (RGBT234 UPT0.5/UPH0.93/INTER25/MB312). Thermal dropped per-frame at the stated rate (RGB always present, frame 0 full); online update active (same operating point as the main table). Official RGBT234 MPR/MSR over 234 sequences. Single model, single seed.
+  </footer>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>
+const RATES=[0,25,50,75,100];
+const MPR=[93.37,92.03,90.77,90.01,89.15];
+const MSR=[70.02,69.07,68.19,67.39,66.70];
+const cv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const tip=document.getElementById('tip');
+
+// table
+document.getElementById('tbody').innerHTML=RATES.map((r,i)=>{
+  const dm=(MPR[i]-MPR[0]).toFixed(2), ds=(MSR[i]-MSR[0]).toFixed(2);
+  const cls=i===0?' class="r0"':'';
+  return `<tr${cls}><td>${r}%${i===0?'  (full)':''}</td><td>${MPR[i].toFixed(2)}</td><td>${MSR[i].toFixed(2)}</td>`+
+    `<td>${i?dm:'—'}</td><td>${i?ds:'—'}</td></tr>`;
+}).join('');
+
+function draw(){
+  const W=780,H=380,m={t:24,r:96,b:50,l:52},iw=W-m.l-m.r,ih=H-m.t-m.b;
+  const lo=64,hi=95;
+  const X=i=>m.l+i/(RATES.length-1)*iw, Y=v=>m.t+ih-(v-lo)/(hi-lo)*ih;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="RGBT234 degradation">`;
+  for(let v=65;v<=95;v+=5){s+=`<line class="grid-line" x1="${m.l}" y1="${Y(v)}" x2="${m.l+iw}" y2="${Y(v)}"/>`;
+    s+=`<text class="tick" x="${m.l-8}" y="${Y(v)+4}" text-anchor="end">${v}</text>`;}
+  s+=`<line class="axis-line" x1="${m.l}" y1="${m.t+ih}" x2="${m.l+iw}" y2="${m.t+ih}"/>`;
+  RATES.forEach((r,i)=>s+=`<text class="tick" x="${X(i)}" y="${m.t+ih+18}" text-anchor="middle">${r}%</text>`);
+  s+=`<text class="axtitle" x="${m.l+iw/2}" y="${H-6}" text-anchor="middle">thermal drop rate</text>`;
+  // R0 marker
+  s+=`<line x1="${X(0)}" y1="${m.t}" x2="${X(0)}" y2="${m.t+ih}" stroke="var(--good)" stroke-dasharray="3 3" stroke-width="1" opacity="0.5"/>`;
+  s+=`<text class="tick" x="${X(0)}" y="${m.t-8}" text-anchor="start" fill="var(--good)" font-weight="700">R0 = SOTA</text>`;
+  [['MPR',MPR,'--mpr'],['MSR',MSR,'--msr']].forEach(([name,arr,c])=>{
+    const col=cv(c); let p='';arr.forEach((v,i)=>p+=(i?'L':'M')+X(i)+' '+Y(v)+' ');
+    s+=`<path d="${p}" fill="none" stroke="${col}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>`;
+    arr.forEach((v,i)=>{s+=`<circle cx="${X(i)}" cy="${Y(v)}" r="${i===0?5:3.6}" fill="${i===0?col:'var(--surface)'}" stroke="${col}" stroke-width="2" data-tip="${name} · ${RATES[i]}% drop|${v.toFixed(2)}" style="cursor:pointer"/>`;});
+    s+=`<text class="lbl" x="${m.l+iw+8}" y="${Y(arr[arr.length-1])+4}" fill="${col}">${name} ${arr[arr.length-1].toFixed(1)}</text>`;
+  });
+  s+=`</svg>`;
+  document.getElementById('chart').innerHTML=s;
+  document.querySelectorAll('#chart [data-tip]').forEach(el=>{
+    el.addEventListener('mousemove',e=>{const [a,b]=el.dataset.tip.split('|');tip.innerHTML=`<b>${a}</b><div class="tr"><span></span><span>${b}</span></div>`;tip.style.opacity='1';let x=e.clientX+14,y=e.clientY+14;if(x+tip.offsetWidth>innerWidth)x=e.clientX-tip.offsetWidth-14;tip.style.left=x+'px';tip.style.top=y+'px';});
+    el.addEventListener('mouseleave',()=>tip.style.opacity='0');
+  });
+}
+draw();
+new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+matchMedia('(prefers-color-scheme:dark)').addEventListener('change',draw);
+</script>

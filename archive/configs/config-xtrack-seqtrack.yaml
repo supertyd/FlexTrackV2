@@ -1,0 +1,27 @@
+name: 'XTrack+SeqTrackv2 missing-rate compare 8GPU'
+description: 'Interactive 8xA100 runner for XTrack & SeqTrackv2 missing-rate degradation experiments'
+tags: ['flextrackv2', 'CVL', 'xtrack-compare']
+project_id: anst_model_training
+priority: 1
+command: 'sleep infinity'
+scheduling_options:
+  preemptible: False
+cluster_options:
+  aws:
+    instance_type: p4d.24xlarge
+resources:
+  cluster: aws_6
+  docker_image: docker.apple.com/anst-dev/ubuntu20.04-python3.8-cuda11.8-torch2.1.1:2024-11-07
+  ports: ['JUPYTER_PORT', "BOLT_TAB_Gradio"]
+  timeout: 7d
+  task_type: 8gpu
+  disk_gb: 4000
+is_parent: False
+environment_variables:
+  PYTHONPATH: '/mnt/task_runtime:$PYTHONPATH'
+attribution:
+  area: Other
+  record: "Other"
+permissions:
+  viewers:
+  - cvl-anst-training

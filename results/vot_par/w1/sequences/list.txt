@@ -1,0 +1,16 @@
+backpack_blue_1
+bag02_indoor_2
+ball20_indoor_1
+box_darkroom_noocc_2_1
+boxes_humans_room_occ_1_4
+box_room_occ_2_1
+colacan03_indoor_3
+cube05_indoor_4
+duck03_wild_1
+glass01_indoor_2
+humans_shirts_room_occ_1_B_2
+person_outside_1
+robot_human_corridor_noocc_1_B_1
+squirrel_wild_2
+toy_office_noocc_1_1
+trophy_outside_2

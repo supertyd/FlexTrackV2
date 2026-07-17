@@ -1,0 +1,13 @@
+{
+  "config": "flextrackv2_l224_56_best",
+  "description": "Per-dataset best-of {default-threshold eval, grid-search-tuned-threshold eval} for the large V56 model (flextrackv2_l224_56, checkpoint FlexTrackV2_ep0040.pth.tar). Same trained weights throughout; only inference-time UPT/UPH/INTER/MB thresholds differ per source.",
+  "RGBT234": {"auc": 67.7, "pr": 93.2, "source": "gstuned"},
+  "RGBT234_miss": {"auc": 60.42, "pr": 84.07, "source": "default"},
+  "LasHeR": {"auc": 59.49, "pr": 71.83, "source": "gstuned"},
+  "LasHeR_miss": {"auc": 53.15, "pr": 63.38, "source": "default=gstuned (no tuned thresholds on record)"},
+  "VisEvent": {"auc": 64.51, "pr": 77.16, "source": "gstuned"},
+  "VisEvent_miss": {"auc": 55.11, "pr": 68.24, "source": "default=gstuned (no tuned thresholds on record)"},
+  "DepthTrack": {"precision": 67.5, "recall": 70.45, "fscore": 68.95, "source": "default"},
+  "DepthTrack_miss": {"precision": 58.28, "recall": 60.6, "fscore": 59.42, "source": "default"},
+  "VOT22RGBD": {"status": "pending", "note": "still running on 92av62ravp (default-threshold eval), ~34% complete as of 2026-07-08T14:41 UTC, will be merged in once finished"}
+}

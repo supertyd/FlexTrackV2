@@ -1,0 +1,38 @@
+{
+  "config": "flextrackv2_b224_56_abl_uni_a2r_no_ortho",
+  "RGBT234": {
+    "auc": 66.8,
+    "pr": 90.16
+  },
+  "RGBT234_miss": {
+    "auc": 60.26,
+    "pr": 83.53
+  },
+  "LasHeR": {
+    "auc": 57.11,
+    "pr": 68.59
+  },
+  "LasHeR_miss": {
+    "auc": 50.55,
+    "pr": 59.52
+  },
+  "VisEvent": {
+    "auc": 63.37,
+    "pr": 76.2
+  },
+  "VisEvent_miss": {
+    "auc": 53.94,
+    "pr": 67.26
+  },
+  "DepthTrack": {
+    "precision": 63.61,
+    "recall": 66.52,
+    "fscore": 65.03
+  },
+  "DepthTrack_miss": {
+    "precision": 56.25,
+    "recall": 58.8,
+    "fscore": 57.5
+  },
+  "VOT22RGBD": null
+}

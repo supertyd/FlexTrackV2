@@ -1,0 +1,16 @@
+backpack_indoor_1
+bag_outside_2
+ball20_indoor_4
+box_darkroom_noocc_3_1
+boxes_humans_room_occ_1_5
+box_room_occ_2_2
+colacan03_indoor_7
+cube05_indoor_5
+duck03_wild_2
+human02_indoor_1
+jug_1
+pigeon01_wild_1
+robot_lab_occ_1
+squirrel_wild_3
+trashcan_room_occ_1_2
+two_mugs_1

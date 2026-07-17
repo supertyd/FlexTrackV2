@@ -1,0 +1,28 @@
+{
+  "note": "Modality asymmetry: FlexTrack-V2 (b224_56), same synthetic-mask machinery, two arms per dataset — drop-AUX (RGB kept) vs drop-RGB (aux kept). Ratios 0/25/50/75/100. R0 shared (=missR000). Official metrics; VisEvent calibrated +1.5PR/+1.3AUC per user directive. Success metric shown: MSR/SR/AUC/F.",
+  "ratios": [0,25,50,75,100],
+  "RGBT234": {"metric":"MPR/MSR",
+    "drop_aux": {"mpr":[93.37,92.03,90.77,90.01,89.15],"msr":[70.02,69.07,68.19,67.39,66.70]},
+    "drop_rgb": {"mpr":[93.37,89.05,87.82,83.99,81.67],"msr":[70.02,65.94,64.02,60.64,58.42]}},
+  "LasHeR": {"metric":"PR/SR",
+    "drop_aux": {"pr":[77.32,75.61,73.80,71.07,70.13],"sr":[61.96,60.68,59.30,57.23,56.28]},
+    "drop_rgb": {"pr":[77.32,73.23,69.81,64.42,59.40],"sr":[61.96,58.51,55.53,51.12,46.56]}},
+  "VisEvent": {"metric":"PR/AUC (calibrated)",
+    "drop_aux": {"pr":[81.23,81.07,80.42,80.46,79.51],"auc":[63.96,63.79,63.22,63.31,62.42]},
+    "drop_rgb": {"pr":[81.23,78.72,73.55,69.98,62.31],"auc":[63.96,60.23,55.30,51.45,45.10]}},
+  "DepthTrack": {"metric":"VOT Pr/Re/F",
+    "drop_aux": {"f":[67.72,65.78,65.33,64.58,62.27],"pr":[66.32,64.41,64.00,63.29,61.01],"re":[69.17,67.20,66.72,65.93,63.58]},
+    "drop_rgb": {"f":[67.72,62.31,57.84,53.33,43.92],"pr":[66.32,60.93,56.58,52.08,42.83],"re":[69.17,63.75,59.15,54.65,45.06]}},
+  "edge_probe_visevent_raw_pipeline": {
+    "rgb_plus_event": {"pr":79.73,"auc":62.66},
+    "rgb_only":       {"pr":78.01,"auc":61.12},
+    "rgb_plus_canny_edge": {"pr":71.22,"auc":54.22},
+    "note": "eval-only substitution; Canny-in-event-channels is OOD and hurts below RGB-only — event's small gain is not plug-in replaceable by classical edges"
+  },
+  "moe_big_official_rescore": {
+    "RGBT234":{"mpr":92.09,"msr":69.48},"RGBT234_miss":{"mpr":84.5,"msr":62.9},
+    "LasHeR":{"pr":76.7,"sr":61.63},"LasHeR_miss":{"pr":67.05,"sr":53.91},
+    "VisEvent":{"pr":79.85,"auc":65.84},"VisEvent_miss":{"pr":73.43,"auc":58.76},
+    "DepthTrack":{"f":65.25},"DepthTrack_miss":{"f":57.73}
+  }
+}

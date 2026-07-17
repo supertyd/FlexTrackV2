@@ -1,0 +1,149 @@
+<style>
+  :root{
+    --plane:#eef0f2;--surface:#f9fafb;--surface-2:#f2f4f6;--ink:#10151b;--ink-2:#4b5560;--muted:#7c8792;
+    --grid:#e0e4e8;--rule:#d3d9df;--hair:rgba(16,21,27,0.09);--accent:#2f6f8f;
+    --aux:#2a78d6;--rgb:#d62728;--edge:#8a63c9;--good:#0f8a2f;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --sh:0 1px 2px rgba(16,21,27,.04),0 4px 16px rgba(16,21,27,.05);}
+  @media (prefers-color-scheme:dark){:root{--plane:#0b0e11;--surface:#14181c;--surface-2:#1a1f24;--ink:#f3f5f7;--ink-2:#b7c0c9;--muted:#7e8893;--grid:#242a30;--rule:#2c333a;--hair:rgba(255,255,255,0.10);--accent:#5fb0d0;--aux:#3987e5;--rgb:#e66767;--edge:#a98ae0;--good:#2fb551;--sh:none;}}
+  :root[data-theme="dark"]{--plane:#0b0e11;--surface:#14181c;--surface-2:#1a1f24;--ink:#f3f5f7;--ink-2:#b7c0c9;--muted:#7e8893;--grid:#242a30;--rule:#2c333a;--hair:rgba(255,255,255,0.10);--accent:#5fb0d0;--aux:#3987e5;--rgb:#e66767;--edge:#a98ae0;--good:#2fb551;--sh:none;}
+  :root[data-theme="light"]{--plane:#eef0f2;--surface:#f9fafb;--surface-2:#f2f4f6;--ink:#10151b;--ink-2:#4b5560;--muted:#7c8792;--grid:#e0e4e8;--rule:#d3d9df;--hair:rgba(16,21,27,0.09);--accent:#2f6f8f;--aux:#2a78d6;--rgb:#d62728;--edge:#8a63c9;--good:#0f8a2f;--sh:0 1px 2px rgba(16,21,27,.04),0 4px 16px rgba(16,21,27,.05);}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--plane);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px 72px}
+  header{padding:38px 0 22px;border-bottom:1px solid var(--rule)}
+  .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  h1{margin:10px 0 6px;font-size:28px;font-weight:680;letter-spacing:-.01em;text-wrap:balance}
+  .sub{color:var(--ink-2);max-width:76ch}
+  .legend{display:flex;flex-wrap:wrap;gap:18px;margin-top:16px}
+  .lg{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:13px;color:var(--ink-2)}
+  .sw{width:18px;height:3px;border-radius:2px}
+  .grid4{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+  @media (max-width:720px){.grid4{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:14px 16px 10px;box-shadow:var(--sh)}
+  .card h3{margin:0 0 2px;font-size:14.5px;font-weight:620}
+  .card .aux-l{font-family:var(--mono);font-size:11px;color:var(--muted)}
+  svg{display:block;width:100%;height:auto;overflow:visible}
+  .grid-line{stroke:var(--grid);stroke-width:1}.axis-line{stroke:var(--rule);stroke-width:1}
+  .tick{fill:var(--muted);font-family:var(--mono);font-size:10px}
+  .lbl{font-family:var(--mono);font-size:10px;font-weight:600}
+  .tip{position:fixed;pointer-events:none;z-index:9;opacity:0;transition:opacity .1s;background:var(--ink);color:var(--surface);font-family:var(--mono);font-size:11.5px;padding:7px 9px;border-radius:7px;box-shadow:0 6px 24px rgba(0,0,0,.28)}
+  :root[data-theme="dark"] .tip{background:#e9edf0;color:#0b0e11}
+  section{margin-top:26px}
+  .concl{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:16px 18px;box-shadow:var(--sh)}
+  .concl h2{margin:0 0 8px;font-size:17px}
+  .concl p{margin:6px 0;font-size:13.5px;color:var(--ink-2)}
+  .concl b{color:var(--ink)}
+  .ebox{border-left:3px solid var(--edge);background:color-mix(in srgb,var(--edge) 7%,var(--surface));border-radius:0 10px 10px 0;padding:12px 15px;margin-top:12px}
+  .ebox h3{margin:0 0 6px;font-size:14px;color:var(--edge)}
+  .ebox p{margin:4px 0;font-size:13px;color:var(--ink-2)}
+  table{border-collapse:collapse;width:100%;font-size:12px;margin-top:6px}
+  th,td{padding:6px 9px;text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;border-bottom:1px solid var(--grid);white-space:nowrap}
+  th:first-child,td:first-child{text-align:left}
+  thead th{background:var(--surface-2);color:var(--ink-2);font-size:10.5px}
+  footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--rule);color:var(--muted);font-family:var(--mono);font-size:11px;line-height:1.7}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">FlexTrack-V2 · TPAMI · Modality asymmetry</div>
+    <h1>Which modality is the lifeline? Drop-RGB vs Drop-Auxiliary</h1>
+    <p class="sub">Same model (FlexTrack-V2), same masks, two mirror-image sweeps: dropping the <b>auxiliary</b> modality (thermal / event / depth, RGB kept) vs dropping <b>RGB</b> (auxiliary kept). The gap between the two curves is the modality asymmetry — how much more the tracker leans on RGB.</p>
+    <div class="legend">
+      <span class="lg"><span class="sw" style="background:var(--aux)"></span>drop auxiliary (RGB kept)</span>
+      <span class="lg"><span class="sw" style="background:var(--rgb)"></span>drop RGB (auxiliary kept)</span>
+    </div>
+  </header>
+
+  <div class="grid4" id="panels"></div>
+
+  <section>
+    <div class="concl">
+      <h2>Conclusions</h2>
+      <p><b>1 · RGB is the lifeline on every benchmark.</b> Dropping RGB costs 2–12× more than dropping the auxiliary modality (success drop, full removal): RGBT234 <b>−11.6 vs −3.3</b>, LasHeR <b>−15.4 vs −5.7</b>, VisEvent <b>−18.9 vs −1.5</b>, DepthTrack <b>−23.8 vs −5.5</b>.</p>
+      <p><b>2 · The asymmetry is largest exactly where the auxiliary is weakest.</b> On VisEvent the event stream is near-redundant (−1.5) yet losing RGB is catastrophic (−18.9) — RGB carries essentially all the signal. On LasHeR (thermal genuinely useful, −5.7) the asymmetry narrows.</p>
+      <p><b>3 · Still no collapse.</b> Even RGB fully dropped, the model tracks on the auxiliary modality alone (e.g. thermal-only RGBT234 MSR 58.4) — the CMA-trained model degrades, but keeps working, in both directions.</p>
+      <div class="ebox">
+        <h3>Edge probe (VisEvent, eval-only)</h3>
+        <p>RGB+event <b>79.7/62.7</b> · RGB-only <b>78.0/61.1</b> · RGB+<i>Canny edge in the event channels</i> <b>71.2/54.2</b> (raw pipeline).</p>
+        <p>Event's gain over RGB-only is small (+1.5 AUC), but it is <b>not plug-in replaceable by classical edges</b> — substituting Canny maps is out-of-distribution and lands <i>below</i> RGB-only. Whatever little the event stream adds, it is not free edge structure; a trained RGB+edge variant would be needed to test the redundancy mechanism further.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="concl">
+      <h2>Full data (precision/success)</h2>
+      <div id="tables"></div>
+    </div>
+  </section>
+
+  <footer>
+    FlexTrack-V2 (V54 weights + tuned thresholds), full test sets, official metrics: RGBT234 MPR/MSR (234), LasHeR PR/SR (245), VisEvent OTB PR/AUC (320, +1.5PR/+1.3AUC pipeline calibration), DepthTrack VOT Pr/Re/F (50). Both arms share R0 (=0% drop). Masks: per-frame drop at the stated rate, the other modality always present, frame 0 full. Single seed. Data: modality_asymmetry.json.
+  </footer>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>
+const R=[0,25,50,75,100];
+const D={
+ RGBT234:{aux:'thermal',lab:'MSR',
+   a:[70.02,69.07,68.19,67.39,66.70], g:[70.02,65.94,64.02,60.64,58.42],
+   ap:[93.37,92.03,90.77,90.01,89.15], gp:[93.37,89.05,87.82,83.99,81.67]},
+ LasHeR:{aux:'thermal',lab:'SR',
+   a:[61.96,60.68,59.30,57.23,56.28], g:[61.96,58.51,55.53,51.12,46.56],
+   ap:[77.32,75.61,73.80,71.07,70.13], gp:[77.32,73.23,69.81,64.42,59.40]},
+ VisEvent:{aux:'event',lab:'AUC',
+   a:[63.96,63.79,63.22,63.31,62.42], g:[63.96,60.23,55.30,51.45,45.10],
+   ap:[81.23,81.07,80.42,80.46,79.51], gp:[81.23,78.72,73.55,69.98,62.31]},
+ DepthTrack:{aux:'depth',lab:'F',
+   a:[67.72,65.78,65.33,64.58,62.27], g:[67.72,62.31,57.84,53.33,43.92],
+   ap:[66.32,64.41,64.00,63.29,61.01], gp:[66.32,60.93,56.58,52.08,42.83]},
+};
+const cv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const tip=document.getElementById('tip');
+
+function panel(name){
+  const d=D[name], W=440,H=260,m={t:14,r:66,b:34,l:38},iw=W-m.l-m.r,ih=H-m.t-m.b;
+  let all=[...d.a,...d.g]; let lo=Math.min(...all),hi=Math.max(...all); const pad=(hi-lo)*0.13; lo-=pad; hi+=pad;
+  const X=i=>m.l+i/(R.length-1)*iw, Y=v=>m.t+ih-(v-lo)/(hi-lo)*ih;
+  const step=(hi-lo)>18?10:5, y0=Math.ceil(lo/step)*step;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${name} asymmetry">`;
+  for(let v=y0;v<=hi;v+=step){s+=`<line class="grid-line" x1="${m.l}" y1="${Y(v)}" x2="${m.l+iw}" y2="${Y(v)}"/>`;s+=`<text class="tick" x="${m.l-6}" y="${Y(v)+3}" text-anchor="end">${v}</text>`;}
+  s+=`<line class="axis-line" x1="${m.l}" y1="${m.t+ih}" x2="${m.l+iw}" y2="${m.t+ih}"/>`;
+  R.forEach((r,i)=>s+=`<text class="tick" x="${X(i)}" y="${m.t+ih+15}" text-anchor="middle">${r}%</text>`);
+  // shaded asymmetry gap
+  let area='M'; d.a.forEach((v,i)=>area+=`${X(i)} ${Y(v)} L`);
+  for(let i=d.g.length-1;i>=0;i--) area+=`${X(i)} ${Y(d.g[i])} ${i?'L':''}`;
+  s+=`<path d="${area}Z" fill="${cv('--rgb')}" opacity="0.07"/>`;
+  [['drop-aux','a','--aux'],['drop-RGB','g','--rgb']].forEach(([t,k,c])=>{
+    const col=cv(c),ys=d[k];
+    let p='';ys.forEach((v,i)=>p+=(i?'L':'M')+X(i)+' '+Y(v)+' ');
+    s+=`<path d="${p}" fill="none" stroke="${col}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+    ys.forEach((v,i)=>s+=`<circle cx="${X(i)}" cy="${Y(v)}" r="${i===0?3.6:2.6}" fill="${i===0?col:'var(--surface)'}" stroke="${col}" stroke-width="1.8" data-tip="${name} ${t} · ${R[i]}%|${d.lab} ${v.toFixed(1)}" style="cursor:pointer"/>`);
+    s+=`<text class="lbl" x="${m.l+iw+6}" y="${Y(ys[4])+3}" fill="${col}">${(ys[4]-ys[0]).toFixed(1)}</text>`;
+  });
+  return `<div class="card"><h3>${name} <span class="aux-l">· aux=${d.aux} · ${d.lab}</span></h3>${s}</div>`;
+}
+function render(){
+  document.getElementById('panels').innerHTML=Object.keys(D).map(panel).join('');
+  document.querySelectorAll('#panels [data-tip]').forEach(el=>{
+    el.addEventListener('mousemove',e=>{const [a,b]=el.dataset.tip.split('|');tip.innerHTML=`<b>${a}</b> &nbsp; ${b}`;tip.style.opacity='1';let x=e.clientX+13;if(x+tip.offsetWidth>innerWidth)x=e.clientX-tip.offsetWidth-13;tip.style.left=x+'px';tip.style.top=(e.clientY+13)+'px';});
+    el.addEventListener('mouseleave',()=>tip.style.opacity='0');
+  });
+}
+function tables(){
+  let h='';
+  for(const name of Object.keys(D)){const d=D[name];
+    h+=`<div style="margin:10px 0"><div style="font-family:var(--mono);font-size:12px;color:var(--ink-2)">${name} <span style="color:var(--muted)">(aux=${d.aux})</span></div><div style="overflow-x:auto"><table><thead><tr><th>arm</th>${R.map(r=>`<th>${r}%</th>`).join('')}<th>Δ→100%</th></tr></thead><tbody>`;
+    h+=`<tr><td style="color:var(--aux);font-weight:600">drop-aux</td>`+d.a.map((v,i)=>`<td>${d.ap[i].toFixed(1)}/${v.toFixed(1)}</td>`).join('')+`<td style="font-weight:700">${(d.a[4]-d.a[0]).toFixed(1)}</td></tr>`;
+    h+=`<tr><td style="color:var(--rgb);font-weight:600">drop-RGB</td>`+d.g.map((v,i)=>`<td>${d.gp[i].toFixed(1)}/${v.toFixed(1)}</td>`).join('')+`<td style="font-weight:700">${(d.g[4]-d.g[0]).toFixed(1)}</td></tr>`;
+    h+=`</tbody></table></div></div>`;}
+  document.getElementById('tables').innerHTML=h;
+}
+render(); tables();
+new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+matchMedia('(prefers-color-scheme:dark)').addEventListener('change',render);
+</script>

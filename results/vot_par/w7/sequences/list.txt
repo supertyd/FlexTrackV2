@@ -1,0 +1,15 @@
+bag01_indoor_4
+ball11_wild_2
+box_darkroom_noocc_10_1
+boxes_backpack_room_occ_1_2
+box_room_noocc_4_1
+cat01_indoor_3
+cube05_indoor_2
+developmentboard_indoor_4
+flag_indoor_1
+humans_shirts_room_occ_1_A_2
+notebook01_indoor_1
+pot_indoor_3
+shoes02_indoor_2
+toy02_indoor_1
+trendNet_outside_1

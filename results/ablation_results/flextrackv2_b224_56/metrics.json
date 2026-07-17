@@ -1,0 +1,21 @@
+{
+  "config": "flextrackv2_b224_56",
+  "RGBT234": {
+    "auc": 67.0,
+    "pr": 90.16
+  },
+  "RGBT234_miss": {
+    "auc": 60.26,
+    "pr": 83.8
+  },
+  "VisEvent": {
+    "auc": 62.55,
+    "pr": 75.53
+  },
+  "VisEvent_miss": {
+    "auc": 52.46,
+    "pr": 65.74
+  },
+  "DepthTrack": null,
+  "DepthTrack_miss": null
+}

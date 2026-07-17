@@ -1,0 +1,16 @@
+backpack_room_noocc_1_1
+ball06_indoor_1
+bicycle2_outside_1
+box_darkroom_noocc_5_1
+boxes_room_occ_1_2
+cartman_robotarm_lab_noocc_1
+cube02_indoor_1
+cup01_indoor_1
+dumbbells01_indoor_2
+human02_indoor_3
+mobilephone03_indoor_2
+pigeon04_wild_1
+roller_indoor_2
+teapot_1
+trashcans_room_occ_1_B_1
+two_tennis_balls_3

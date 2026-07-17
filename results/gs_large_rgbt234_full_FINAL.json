@@ -1,0 +1,18 @@
+{
+  "round": 1,
+  "params": {
+    "UPT": 0.5,
+    "UPH": 0.98,
+    "INTER": 25,
+    "MB": 437
+  },
+  "metrics": {
+    "mpr": 92.42916736283087,
+    "msr": 69.13698895457003
+  },
+  "target": {
+    "mpr": 91.94,
+    "msr": 69.13
+  },
+  "beats_base_on_every_metric": true
+}

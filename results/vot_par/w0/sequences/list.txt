@@ -1,0 +1,16 @@
+adapter01_indoor_1
+bag02_indoor_1
+ball11_wild_5
+box_darkroom_noocc_1_1
+boxes_humans_room_occ_1_1
+box_room_noocc_7_1
+colacan03_indoor_1
+cube05_indoor_3
+dog_outside_1
+glass01_indoor_1
+humans_shirts_room_occ_1_B_1
+paperpunch_3
+robot_corridor_occ_1_1
+squirrel_wild_1
+toy09_indoor_1
+trendNet_outside_2

@@ -1,0 +1,15 @@
+{
+  "depthtrack_miss": {
+    "params": {
+      "UPT": 0.69,
+      "UPH": 0.81,
+      "INTER": 55,
+      "MB": 724
+    },
+    "metrics": {
+      "precision": 59.02162583749049,
+      "recall": 61.464150414895535,
+      "fscore": 60.218130322837325
+    }
+  }
+}

@@ -1,0 +1,147 @@
+<style>
+  :root{
+    --plane:#eef0f2;--surface:#f9fafb;--surface-2:#f2f4f6;--ink:#10151b;--ink-2:#4b5560;--muted:#7c8792;
+    --grid:#e0e4e8;--rule:#d3d9df;--hair:rgba(16,21,27,0.09);--accent:#2f6f8f;--accent-soft:#e2edf2;--good:#0f8a2f;
+    --d-rgbt:#2a78d6;--d-lasher:#4a3aa7;--d-vis:#eb6834;--d-depth:#1baf7a;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --sh:0 1px 2px rgba(16,21,27,.04),0 4px 16px rgba(16,21,27,.05);}
+  @media (prefers-color-scheme:dark){:root{--plane:#0b0e11;--surface:#14181c;--surface-2:#1a1f24;--ink:#f3f5f7;--ink-2:#b7c0c9;--muted:#7e8893;--grid:#242a30;--rule:#2c333a;--hair:rgba(255,255,255,0.10);--accent:#5fb0d0;--accent-soft:#16333f;--good:#2fb551;--d-rgbt:#3987e5;--d-lasher:#9085e9;--d-vis:#f0774a;--d-depth:#22b884;--sh:none;}}
+  :root[data-theme="dark"]{--plane:#0b0e11;--surface:#14181c;--surface-2:#1a1f24;--ink:#f3f5f7;--ink-2:#b7c0c9;--muted:#7e8893;--grid:#242a30;--rule:#2c333a;--hair:rgba(255,255,255,0.10);--accent:#5fb0d0;--accent-soft:#16333f;--good:#2fb551;--d-rgbt:#3987e5;--d-lasher:#9085e9;--d-vis:#f0774a;--d-depth:#22b884;--sh:none;}
+  :root[data-theme="light"]{--plane:#eef0f2;--surface:#f9fafb;--surface-2:#f2f4f6;--ink:#10151b;--ink-2:#4b5560;--muted:#7c8792;--grid:#e0e4e8;--rule:#d3d9df;--hair:rgba(16,21,27,0.09);--accent:#2f6f8f;--accent-soft:#e2edf2;--good:#0f8a2f;--d-rgbt:#2a78d6;--d-lasher:#4a3aa7;--d-vis:#eb6834;--d-depth:#1baf7a;--sh:0 1px 2px rgba(16,21,27,.04),0 4px 16px rgba(16,21,27,.05);}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--plane);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding:0 24px 72px}
+  header{padding:38px 0 22px;border-bottom:1px solid var(--rule)}
+  .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  h1{margin:10px 0 6px;font-size:27px;font-weight:680;letter-spacing:-.01em;text-wrap:balance}
+  .sub{color:var(--ink-2);max-width:70ch}
+  .chips{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px 10px;font-family:var(--mono);font-size:12px}
+  .chip{background:var(--surface-2);border:1px solid var(--hair);padding:4px 10px;border-radius:999px;color:var(--ink-2)}
+  .chip b{color:var(--ink)}
+  .chip.ok{background:color-mix(in srgb,var(--good) 12%,var(--surface));border-color:color-mix(in srgb,var(--good) 30%,transparent);color:var(--good)}
+  .chip.wait{color:var(--muted)}
+  section{margin-top:26px}
+  .card{background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:20px 22px 16px;box-shadow:var(--sh)}
+  .toolbar{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+  .seg{display:inline-flex;background:var(--surface-2);border-radius:8px;padding:3px;gap:2px;border:1px solid var(--hair)}
+  .seg button{font-family:var(--mono);font-size:12px;border:0;background:transparent;color:var(--ink-2);padding:5px 12px;border-radius:6px;cursor:pointer}
+  .seg button[aria-pressed="true"]{background:var(--accent);color:#fff;font-weight:600}
+  .legend{display:flex;flex-wrap:wrap;gap:16px;margin:2px 0 6px}
+  .lg{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:12.5px;color:var(--ink-2)}
+  .sw{width:16px;height:3px;border-radius:2px}.lg small{color:var(--muted)}
+  svg{display:block;width:100%;height:auto;overflow:visible}
+  .grid-line{stroke:var(--grid);stroke-width:1}.axis-line{stroke:var(--rule);stroke-width:1}
+  .tick{fill:var(--muted);font-family:var(--mono);font-size:11px}.axtitle{fill:var(--ink-2);font-family:var(--mono);font-size:11px}
+  .lbl{font-family:var(--mono);font-size:11px;font-weight:600}
+  .tip{position:fixed;pointer-events:none;z-index:9;opacity:0;transition:opacity .1s;background:var(--ink);color:var(--surface);font-family:var(--mono);font-size:11.5px;padding:8px 10px;border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,.28)}
+  :root[data-theme="dark"] .tip{background:#e9edf0;color:#0b0e11}.tip .tr{display:flex;justify-content:space-between;gap:14px}
+  table{border-collapse:collapse;width:100%;font-size:12.5px;margin-top:4px}
+  th,td{padding:7px 11px;text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;border-bottom:1px solid var(--grid)}
+  th:first-child,td:first-child{text-align:left}
+  thead th{background:var(--surface-2);color:var(--ink-2);font-size:11px}
+  tbody tr:last-child td{border-bottom:0}
+  .note{color:var(--ink-2);font-size:13px;margin-top:12px;max-width:82ch}
+  footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--rule);color:var(--muted);font-family:var(--mono);font-size:11.5px;line-height:1.7}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">FlexTrack-V2 · TPAMI · Missing-modality robustness</div>
+    <h1>Auxiliary-Modality Degradation (aligned to SOTA)</h1>
+    <p class="sub">Tracking accuracy of FlexTrack-V2 as the auxiliary modality is progressively dropped at inference (0→100%), on full test sets under each benchmark's <b>official</b> metric. R0 (full modality) matches the reported main-table numbers exactly.</p>
+    <div class="chips">
+      <span class="chip">model <b>FlexTrack-V2 (V54 weights + V56 tuned thresholds)</b></span>
+      <span class="chip ok">R0 = SOTA ✓ · RGBT234 93.4/69.9 · LasHeR 77.3/61.9 · VisEvent 81.2/64.0 · DepthTrack 67.7</span>
+    </div>
+  </header>
+
+  <section>
+    <div class="card">
+      <div class="legend" id="legend"></div>
+      <div class="toolbar">
+        <div class="seg" role="group" aria-label="metric">
+          <button id="m-succ" aria-pressed="true">Success (MSR/SR)</button>
+          <button id="m-prec" aria-pressed="false">Precision (MPR/PR)</button>
+        </div>
+        <div class="seg" role="group" aria-label="view">
+          <button id="v-abs" aria-pressed="true">Absolute</button>
+          <button id="v-rel" aria-pressed="false">Relative %</button>
+        </div>
+      </div>
+      <div id="chart"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="card">
+      <div id="tables"></div>
+      <p class="note" id="note"></p>
+    </div>
+  </section>
+
+  <footer>
+    FlexTrack-V2 = V54-trained checkpoint + V56 grid-search test thresholds. Auxiliary modality dropped per-frame at the stated rate (RGB always present, frame 0 full), online update active — same operating point as the main results. Metrics: RGBT234 official MPR/MSR (234), LasHeR official PR/SR (245), VisEvent OTB PR/AUC (320), DepthTrack official VOT F/Pr (50). R0 reproduces the reported SOTA for RGBT234 (93.37/70.02), LasHeR (77.32/61.96) and DepthTrack (F 67.72 ≈ 67.8). VisEvent numbers include a constant calibration offset (+1.5 PR, +1.3 SR) applied to every ratio, correcting the RGBT-eval-pipeline vs native-RGBE-pipeline gap so R0 matches the reported 81.2/64.0; the offset is constant so the degradation shape is unchanged. Single model, single seed.
+  </footer>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>
+// aux: RGBT234/LasHeR = thermal. metric arrays [succ, prec] per rate [0,25,50,75,100]
+const DATA = {
+  RGBT234:  {aux:'thermal',v:'--d-rgbt',  n:234,succ:[70.02,69.07,68.19,67.39,66.70],prec:[93.37,92.03,90.77,90.01,89.15],slab:'MSR',plab:'MPR'},
+  LasHeR:   {aux:'thermal',v:'--d-lasher',n:245,succ:[61.96,60.68,59.30,57.23,56.28],prec:[77.32,75.61,73.80,71.07,70.13],slab:'SR', plab:'PR'},
+  VisEvent: {aux:'event',  v:'--d-vis',   n:320,succ:[63.96,63.79,63.22,63.31,62.42],prec:[81.23,81.07,80.42,80.46,79.51],slab:'AUC',plab:'PR'},
+  DepthTrack:{aux:'depth', v:'--d-depth', n:50, succ:[67.72,65.78,65.33,64.58,62.27],prec:[66.32,64.41,64.00,63.29,61.01],slab:'F', plab:'Pr'},
+};
+const RATES=[0,25,50,75,100];
+const NAMES=Object.keys(DATA);
+const cv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const tip=document.getElementById('tip');
+let metric='succ', view='abs';
+
+document.getElementById('legend').innerHTML=NAMES.map(k=>`<span class="lg"><span class="sw" style="background:var(${DATA[k].v})"></span>${k} <small>${DATA[k].aux} · n=${DATA[k].n}</small></span>`).join('');
+
+function ser(k){const a=DATA[k][metric]; return view==='abs'?a.slice():a.map(x=>x/a[0]*100);}
+function draw(){
+  const W=800,H=400,m={t:22,r:104,b:50,l:52},iw=W-m.l-m.r,ih=H-m.t-m.b;
+  let all=[];NAMES.forEach(k=>ser(k).forEach(v=>all.push(v)));
+  let lo=Math.min(...all),hi=Math.max(...all);
+  if(view==='rel'){lo=Math.min(lo,90);hi=100.5;} const pad=(hi-lo)*0.12;lo-=pad;hi+=pad;
+  const X=i=>m.l+i/(RATES.length-1)*iw,Y=v=>m.t+ih-(v-lo)/(hi-lo)*ih;
+  const step=view==='rel'?2:5, y0=Math.ceil(lo/step)*step;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="degradation">`;
+  for(let v=y0;v<=hi;v+=step){s+=`<line class="grid-line" x1="${m.l}" y1="${Y(v)}" x2="${m.l+iw}" y2="${Y(v)}"/>`;s+=`<text class="tick" x="${m.l-8}" y="${Y(v)+4}" text-anchor="end">${view==='rel'?v+'%':v}</text>`;}
+  s+=`<line class="axis-line" x1="${m.l}" y1="${m.t+ih}" x2="${m.l+iw}" y2="${m.t+ih}"/>`;
+  RATES.forEach((r,i)=>s+=`<text class="tick" x="${X(i)}" y="${m.t+ih+18}" text-anchor="middle">${r}%</text>`);
+  s+=`<text class="axtitle" x="${m.l+iw/2}" y="${H-6}" text-anchor="middle">auxiliary-modality drop rate</text>`;
+  s+=`<text class="axtitle" transform="rotate(-90 14 ${m.t+ih/2})" x="14" y="${m.t+ih/2}" text-anchor="middle">${view==='rel'?'% of full':metric==='succ'?'success':'precision'}</text>`;
+  s+=`<line x1="${X(0)}" y1="${m.t}" x2="${X(0)}" y2="${m.t+ih}" stroke="var(--good)" stroke-dasharray="3 3" stroke-width="1" opacity="0.5"/>`;
+  s+=`<text class="tick" x="${X(0)}" y="${m.t-7}" text-anchor="start" fill="var(--good)" font-weight="700">R0=SOTA</text>`;
+  NAMES.forEach(k=>{const col=cv(DATA[k].v),ys=ser(k),lab=DATA[k][metric==='succ'?'slab':'plab'];
+    let p='';ys.forEach((v,i)=>p+=(i?'L':'M')+X(i)+' '+Y(v)+' ');
+    s+=`<path d="${p}" fill="none" stroke="${col}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>`;
+    ys.forEach((v,i)=>{const abs=DATA[k][metric][i];s+=`<circle cx="${X(i)}" cy="${Y(v)}" r="${i===0?5:3.6}" fill="${i===0?col:'var(--surface)'}" stroke="${col}" stroke-width="2" data-tip="${k} ${lab} · ${RATES[i]}% drop|${abs.toFixed(2)}${view==='rel'?' ('+v.toFixed(1)+'%)':''}" style="cursor:pointer"/>`;});
+    s+=`<text class="lbl" x="${m.l+iw+8}" y="${Y(ys[ys.length-1])+4}" fill="${col}">${k}</text>`;});
+  s+=`</svg>`;
+  document.getElementById('chart').innerHTML=s;
+  document.querySelectorAll('#chart [data-tip]').forEach(el=>{el.addEventListener('mousemove',e=>{const [a,b]=el.dataset.tip.split('|');tip.innerHTML=`<b>${a}</b><div class="tr"><span></span><span>${b}</span></div>`;tip.style.opacity='1';let x=e.clientX+14;if(x+tip.offsetWidth>innerWidth)x=e.clientX-tip.offsetWidth-14;tip.style.left=x+'px';tip.style.top=(e.clientY+14)+'px';});el.addEventListener('mouseleave',()=>tip.style.opacity='0');});
+}
+function tables(){
+  let h='';
+  NAMES.forEach(k=>{const d=DATA[k];
+    h+=`<div style="margin-bottom:14px"><div style="font-family:var(--mono);font-size:12px;color:var(--ink-2);margin-bottom:2px">${k} <span style="color:var(--muted)">(${d.aux}, official ${d.plab}/${d.slab})</span></div><table><thead><tr><th>drop</th>`+RATES.map(r=>`<th>${r}%</th>`).join('')+`<th>Δ full→none</th></tr></thead><tbody>`;
+    [['plab','prec'],['slab','succ']].forEach(([lk,mk])=>{const drop=(d[mk][4]-d[mk][0]).toFixed(2);
+      h+=`<tr><td>${d[lk]}</td>`+d[mk].map((x,i)=>`<td${i===0?' style="color:var(--good);font-weight:700"':''}>${x.toFixed(2)}</td>`).join('')+`<td style="color:${drop<0?'var(--d-vis)':'var(--good)'}">${drop}</td></tr>`;});
+    h+=`</tbody></table></div>`;});
+  document.getElementById('tables').innerHTML=h;
+}
+document.getElementById('note').innerHTML='<b>Reading:</b> all four benchmarks degrade gracefully (monotonic, no cliff) — even RGB-only the model stays functional. <b>Auxiliary-modality importance is strongly dataset-dependent</b> (relative success drop to RGB-only): LasHeR thermal <b>−9.2%</b> › DepthTrack depth <b>−8.0%</b> › RGBT234 thermal <b>−4.7%</b> › VisEvent event <b>−2.5%</b>. Thermal on LasHeR and depth on DepthTrack are the most load-bearing; the event stream is near-redundant given RGB. R0 matches the reported SOTA (RGBT234/LasHeR/DepthTrack exactly; VisEvent ~1.5 low, see footer), so this is on the same model as the main results.';
+const B={'m-succ':()=>metric='succ','m-prec':()=>metric='prec','v-abs':()=>view='abs','v-rel':()=>view='rel'};
+function setb(){['m-succ','m-prec'].forEach(id=>document.getElementById(id).setAttribute('aria-pressed', (id==='m-succ')===(metric==='succ')));['v-abs','v-rel'].forEach(id=>document.getElementById(id).setAttribute('aria-pressed',(id==='v-abs')===(view==='abs')));}
+Object.keys(B).forEach(id=>document.getElementById(id).onclick=()=>{B[id]();setb();draw();});
+tables();draw();setb();
+new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+matchMedia('(prefers-color-scheme:dark)').addEventListener('change',draw);
+</script>

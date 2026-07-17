@@ -1,0 +1,20 @@
+{
+  "round": 1,
+  "params": {
+    "UPT": 0.85,
+    "UPH": 0.85,
+    "INTER": 77,
+    "MB": 862
+  },
+  "metrics": {
+    "precision": 66.30256072586528,
+    "recall": 69.06193965973594,
+    "fscore": 67.65412549216269
+  },
+  "target": {
+    "precision": 65.55,
+    "recall": 68.52,
+    "fscore": 67.01
+  },
+  "beats_base_on_every_metric": true
+}
