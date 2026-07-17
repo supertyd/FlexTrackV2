@@ -60,8 +60,8 @@ checkpoints/*
 !/RGBE_workspace/test_rgbe_edge.py
 /Depthtrack_workspace/*
 !/Depthtrack_workspace/config.yaml
-!/Depthtrack_workspace/dataset.json
-!/Depthtrack_workspace/trackers.ini
+!/Depthtrack_workspace/dataset.json.example
+!/Depthtrack_workspace/trackers.ini.example
 /Depthtrack_workspace_[B-H]/
 /VOT22RGBD_workspace*/
 
@@ -80,8 +80,9 @@ checkpoints/*
 /external/
 /VisEvent_SOT_Benchmark/
 
-# --- Archive junk drawer: preserved on disk, not published ---
-/archive/misc/
+# --- Archive: dev-only configs/scripts/notes, preserved on disk & on the private
+#     snapshot branch, but kept out of the clean public release ---
+/archive/
 
 # --- Scratch / working artifacts ---
 /parity_check/

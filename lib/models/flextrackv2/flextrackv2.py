@@ -15,41 +15,9 @@ from collections import OrderedDict
 from .moe_fusion import MoEFusion
 import numpy as np
 
-import cv2
-from PIL import Image
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 import os
-import torch.nn.functional as F
-
-def visulize_attention_ratio(img_path, attention_mask, ratio=0.5, cmap="jet"):
-    """
-    img_path: 读取图片的位置
-    attention_mask: 2-D 的numpy矩阵
-    ratio:  放大或缩小图片的比例，可选
-    cmap:   attention map的style，可选
-    """
-    print("load image from: ", img_path)
-    # load the image
-    img = Image.open(img_path, mode='r')
-    img_h, img_w = img.size[0], img.size[1]
-    plt.subplots(nrows=1, ncols=1, figsize=(0.02 * img_h, 0.02 * img_w))
-
-    # scale the image
-    img_h, img_w = int(img.size[0] * ratio), int(img.size[1] * ratio)
-    img = img.resize((img_h, img_w))
-    plt.imshow(img, alpha=1)
-    plt.axis('off')
-    
-    # normalize the attention mask
-    # mask = cv2.resize(attention_mask, (img_h, img_w))
-    mask = F.interpolate(attention_mask, size=(img_h, img_w), mode='bilinear', align_corners=False)
-    normed_mask = mask / mask.max()
-    normed_mask = (normed_mask * 255)
-    # plt.imshow(normed_mask, alpha=0.5, interpolation='nearest', cmap=cmap)
-    plt.imshow(normed_mask.cpu().numpy()[0][0], alpha=0.5, interpolation='bilinear', cmap="jet")
-    plt.savefig("output.png", dpi=300, bbox_inches='tight')
+# Attention-map visualization lives in tools/visualize_attention.py so the model
+# module stays free of plotting deps (cv2 / PIL / matplotlib) for pure inference.
 
 
 
@@ -264,7 +232,6 @@ class FlexTrackV2(nn.Module):
         self.interaction_indexes = cfg.MODEL.ENCODER.INTERACTION_INDEXES
         embed_dim = self.encoder.num_channels
         self.gated_fusion = LinearAttention_moe(embed_dim, embed_dim, self.num_patch_x, self.num_patch_z, cfg.MODEL.MOE.TYPE, moe_cfg=cfg.MODEL.MOE)
-        print('=== DEBUG SHAPES:', self.num_patch_x, self.num_patch_z, self.encoder.body.num_patches_search, '===')
 
         self.cfg = cfg
 
@@ -288,7 +255,9 @@ class FlexTrackV2(nn.Module):
         seq: input sequence of the decoder
         mode: encoder or decoder.
         """
-        if mode == "encoder" and type == "dual":
+        if mode == "encoder":
+            # FlexTrackV2 is dual-modality (RGB + auxiliary); the `type` arg is
+            # retained for signature compatibility but no longer branches.
             if self.training:
                 xz, loss, xz_fusion_teacher = self.forward_encoder(template_list, search_list, template_anno_list, missing=missing, epoch=epoch)
                 self.loss = loss
@@ -297,12 +266,6 @@ class FlexTrackV2(nn.Module):
                 xz, loss = self.forward_encoder(template_list, search_list, template_anno_list, missing=missing, epoch=epoch)
                 self.loss = loss
                 return xz, loss
-        if mode == "encoder" and type == "single":
-            xz, loss = self.forward_encoder_single(template_list, search_list, template_anno_list)
-            self.loss = loss
-            return xz,loss
-
-        
         elif mode == "neck":
             return self.forward_neck(enc_opt,neck_h_state)
         elif mode == "decoder":
@@ -312,27 +275,6 @@ class FlexTrackV2(nn.Module):
         else:
             raise ValueError
 
-    def forward_encoder_single(self, template_list, search_list, template_anno_list):
-        # Forward the encoder
-
-        
-        
-
-        
-        xz = self.encoder(template_list, search_list, template_anno_list)
-
-        xz_aux = self.encoder(template_list_aux, search_list_aux, template_anno_list)
-
-
- 
-
-
-
-
-        xz_fusion, loss_balance = self.gated_fusion(torch.concat((xz,xz_aux),dim=-1))
-
-        # xz_fusion,loss_balance = self.moefusion(xz_fusion)
-        
     def forward_encoder(self, template_list, search_list, template_anno_list, missing = None, epoch=None, current_missing=None):
         # Forward the encoder
         template_list_rgb = [tensor[:,:3, :, :] for tensor in template_list]

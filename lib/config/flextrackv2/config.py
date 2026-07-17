@@ -58,7 +58,7 @@ cfg.TRAIN.LR_DROP_EPOCH = 400
 cfg.TRAIN.BATCH_SIZE = 8
 cfg.TRAIN.NUM_WORKER = 8
 cfg.TRAIN.OPTIMIZER = "ADAMW"
-cfg.TRAIN.MULTIMODAL_TYPE = "single"
+cfg.TRAIN.MULTIMODAL_TYPE = "dual"  # FlexTrackV2 is dual-modality (RGB + auxiliary)
 cfg.TRAIN.ENCODER_MULTIPLIER = 0.1  # encoder's LR = this factor * LR
 cfg.TRAIN.FREEZE_ENCODER = False # for freezing the parameters of encoder
 cfg.TRAIN.ENCODER_OPEN = [] # only for debug, open some layers of encoder when FREEZE_ENCODER is True

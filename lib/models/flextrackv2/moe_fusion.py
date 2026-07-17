@@ -240,8 +240,6 @@ class MoEFusion(nn.Module):
         self.use_recon_loss = getattr(moe_cfg, "USE_RECON_LOSS", True)
         self.hallucinate_direction = getattr(moe_cfg, "HALLUCINATE_DIRECTION", "bilateral")
         self.use_ortho = getattr(moe_cfg, "USE_ORTHO", True)
-        print('=== DEBUG MOE ABLATION FLAGS:', self.substitute_mode, self.use_recon_loss, self.hallucinate_direction, self.use_ortho, '===')
-        print('=== DEBUG MOEFUSION INIT PARAMS:', input_size, patch_num_x, patch_num_z, '===')
 
         # rank = 64
         # emb = 768
@@ -328,7 +326,6 @@ class MoEFusion(nn.Module):
         # self.experts_1 = nn.ModuleList([adapter(768*2,16) for i in range(int(self.num_experts/2))])
 
         self.patch_num_z = patch_num_z
-        print('=== DEBUG MOEFUSION INIT PARAMS:', input_size, patch_num_x, patch_num_z, '===')
 
 
 
@@ -385,14 +382,9 @@ class MoEFusion(nn.Module):
         Returns:
         a float32 `Tensor` of shape [n]
         """
-        b = gates.shape[0]
-
-        penalty = [1,2,3,4,5,6,7,8]
-        penalty=torch.tensor(penalty)
-        penalty = penalty.unsqueeze(0).expand(b, -1).to(gates.device)
-        gates = penalty*gates
-
-        return (gates > 0).sum(0)
+        # Load = number of examples routed to each expert (gate > 0). (A prior
+        # positive per-expert scaling before this test was a no-op and was removed.)
+        return gates.gt(0).sum(dim=0)
 
         return gates
 

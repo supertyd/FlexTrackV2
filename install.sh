@@ -1,5 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
 echo "****************** Installing pytorch ******************"
-conda install pytorch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 pytorch-cuda=12.1 -c pytorch -c nvidia
+conda install -y pytorch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 pytorch-cuda=12.1 -c pytorch -c nvidia
 
 echo ""
 echo ""
@@ -44,7 +47,7 @@ pip install jpeg4py
 echo ""
 echo ""
 echo "****************** Installing tensorboard ******************"
-pip install tb-nightly
+pip install tensorboard
 
 echo ""
 echo ""
@@ -100,11 +103,6 @@ echo ""
 echo ""
 echo "****************** Installing scikit-image ******************"
 pip install scikit-image
-
-echo ""
-echo ""
-echo "****************** Installing thop ******************"
-pip install thop
 
 echo ""
 echo ""

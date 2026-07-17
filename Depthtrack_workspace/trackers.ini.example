@@ -1,0 +1,8 @@
+[flextrackv2]
+label = flextrackv2
+protocol = traxpython
+command = flextrackv2
+# absolute path to <repo>/lib/test/vot
+paths = /path/to/FlexTrackV2/lib/test/vot
+env_FLEXTRACKV2_YAML = flextrackv2
+env_FLEXTRACKV2_EPOCH = 40
