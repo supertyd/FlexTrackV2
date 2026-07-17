@@ -5,6 +5,14 @@ Each figure plots **both** curves in one axis: FlexTrackV2 (red, ours) vs FlexTr
 Boxes on thumbnails: **green = GT**, **red = FlexTrackV2**, **blue = FlexTrack V1**.
 The 4 colored dashed lines (blue/black/red/green) mark the 4 sampled frames shown above.
 
+### Missing-modality panels (`*_miss`)
+The `_miss` figures add a **modality-availability ribbon** below the overlap curve, coloured
+per frame from the official missing-modality masks (`[rgb_present, aux_present]`):
+**both present** · **aux dropped** (Thermal/Event/Depth) · **RGB dropped** · **both dropped**.
+For these panels the 4 sampled frames are chosen at dropout frames where V1 has lost the target
+(IoU&lt;0.3) while V2 holds it (IoU&gt;0.5) — the thumbnails show the red (V2) box staying on the
+target while the blue (V1) box drifts to a distractor, exactly at the annotated dropouts.
+
 ## Method mapping
 - **FlexTrackV2 (Ours)** = `final_result/raw_predictions/*` (flextrackv2_b224_56 — V54 checkpoint + V56 tuned test-time params; config `final_result/configs/flextrackv2_b224_56_best_full.yaml`)
 - **FlexTrack V1** = `data_missing_modality/Missing_data_annotation/FlexTrack/*` (V1 predictions co-located with the missing-modality annotations)
