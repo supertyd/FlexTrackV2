@@ -51,6 +51,16 @@ FlexTrack-V2 vs. the ICCV baseline (FlexTrack). Higher is better; **bold** marks
 
 **Takeaways.** On complete modality FlexTrack-V2 is on par with the SOTA conference model (no accuracy sacrificed). On missing modality it wins across the board, with the largest gains on DepthTrack\_miss (**+5.1 F**) and LasHeR\_miss (**+1.90 AUC / +2.53 PR**) — exactly where active reconstruction (BMR) and completeness-curriculum distillation (CMA) are designed to help.
 
+### ⚙️ Efficiency
+
+| Variant | Backbone | Input | Params | FLOPs (MACs) | FPS |
+| :--- | :--- | :---: | :---: | :---: | :---: |
+| **FlexTrack-V2** | Fast-iTPN-B | 224² | 94.4 M | 45.0 G | 25.0 |
+| **FlexTrack-V2 Large** | Fast-iTPN-L | 224² | 300.4 M | 135.1 G | 20.3 |
+
+FPS measured on a single NVIDIA A100 at inference. Reproduce with
+`python tracking/profile_model.py --script flextrackv2 --config flextrackv2` (or `flextrackv2_large`).
+
 ---
 
 ## Installation
