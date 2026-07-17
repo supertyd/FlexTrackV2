@@ -277,6 +277,10 @@ class FlexTrackV2(nn.Module):
 
     def forward_encoder(self, template_list, search_list, template_anno_list, missing = None, epoch=None, current_missing=None):
         # Forward the encoder
+        # Default to all-modalities-present when no mask is supplied (e.g. FLOPs
+        # profiling via forward(mode="encoder")); the tracker always passes one.
+        if missing is None:
+            missing = [[1.0, 1.0]] * len(template_list)
         template_list_rgb = [tensor[:,:3, :, :] for tensor in template_list]
         search_list_rgb = [tensor[:,:3, :, :] for tensor in search_list]
         template_list_aux = [tensor[:,3:, :, :] for tensor in template_list]

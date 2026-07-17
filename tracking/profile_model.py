@@ -82,7 +82,8 @@ def evaluate(model, template_list,search_list,template_anno_list,hanning,neck_h_
 
 
 def get_data(bs, sz):
-    img_patch = torch.randn(bs, 3, sz, sz)
+    # FlexTrack-V2 is dual-modality: 6 channels = RGB (0:3) + auxiliary (3:6).
+    img_patch = torch.randn(bs, 6, sz, sz)
     return img_patch
 
 if __name__ == "__main__":
@@ -118,7 +119,7 @@ if __name__ == "__main__":
     template_list = [template] * 5
     template_anno_list = [torch.tensor([[0.5,0.5,0.5,0.5]]).to(device)] *5
     search_list = [search]
-    enc_opt = model(template_list,search_list,template_anno_list,mode="encoder")
+    enc_opt, _loss = model(template_list,search_list,template_anno_list,mode="encoder")
     encoder_out, neck_out, neck_h_state = model(enc_opt=enc_opt,neck_h_state=neck_h_state,mode="neck")
     evaluate(model, template_list,search_list,template_anno_list, hanning, neck_h_state=neck_h_state,enc_opt=enc_opt,neck_out=neck_out,bs=bs)
 
