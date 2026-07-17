@@ -161,8 +161,7 @@ python RGBT_workspace/test_rgbt_mgpus.py --script_name flextrackv2 --yaml_name f
 ```
 
 The masks are per-frame `[rgb_present, aux_present]` flags; the drivers resolve them relative to
-the repo root, so no path editing is needed. For the synthetic missing-rate degradation sweep
-(`_missR000…_missR100`, `_missRGB###`) see [docs/REPRODUCE_missrate.md](docs/REPRODUCE_missrate.md).
+the repo root, so no path editing is needed.
 
 Score the produced boxes with the tools in `scripts/tools/`
 (`evaluate_lasher.py`, `evaluate_lasher_visevent.py`, `evaluate_depthtrack.py`).
@@ -177,8 +176,7 @@ DepthTrack / VOT-RGBD also support the official VOT toolkit; see `lib/test/vot/`
 The ablations backing the journal extension (see [docs/ABLATIONS.md](docs/ABLATIONS.md) and the
 interactive [results/ablation_dashboard.html](results/ablation_dashboard.html)) run across multiple
 machines in parallel — see [docs/MULTI_NODE_SETUP.md](docs/MULTI_NODE_SETUP.md) for the multi-node
-setup log if reproducing on new hardware. The missing-modality degradation protocol is documented in
-[docs/REPRODUCE_missrate.md](docs/REPRODUCE_missrate.md).
+setup log if reproducing on new hardware.
 
 ## Repository layout
 
