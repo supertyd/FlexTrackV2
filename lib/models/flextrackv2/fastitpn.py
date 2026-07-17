@@ -1148,8 +1148,11 @@ def fastitpnl(pretrained=False,pos_type="interpolate",pretrain_type="", **kwargs
         pos_type="interpolate",
         **kwargs)
     model.default_cfg = _cfg()
-    pretrain_path = pretrain_type if os.path.isabs(pretrain_type) else current_file_path + pretrain_type
-    if pretrained:
+    pretrain_path = pretrain_type if os.path.isabs(pretrain_type) else os.path.join(current_file_path, pretrain_type)
+    # Backbone pre-train is only needed to train from scratch; at test time the
+    # full FlexTrackV2 checkpoint is loaded afterwards and overwrites these
+    # weights, so a missing pre-train file is not an error for inference.
+    if pretrained and os.path.exists(pretrain_path):
         checkpoint = torch.load(pretrain_path, map_location="cpu")
         load_pretrained(model,checkpoint,pos_type)
     return model

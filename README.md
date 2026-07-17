@@ -66,18 +66,30 @@ export PYTHONPATH=$(pwd):$PYTHONPATH
 
 ## Model weights
 
-Download the released checkpoint (V54-trained weights at the tuned V56 operating point — a single
-self-describing model) from **[huggingface.co/taryya/FlexTrackV2](https://huggingface.co/taryya/FlexTrackV2)**
-and place it at `checkpoints/FlexTrackV2.pth.tar`:
+Two released variants (each a single self-describing model — the config carries its own
+`TEST.CHECKPOINT`, no code changes needed), from
+**[huggingface.co/taryya/FlexTrackV2](https://huggingface.co/taryya/FlexTrackV2)**:
+
+| Variant | Backbone | Config | Checkpoint |
+|---|---|---|---|
+| **FlexTrack-V2** (base) | Fast-iTPN-B | `experiments/flextrackv2/flextrackv2.yaml` | `FlexTrackV2.pth.tar` (1.4 GB) |
+| **FlexTrack-V2 Large** | Fast-iTPN-L | `experiments/flextrackv2/flextrackv2_large.yaml` | `FlexTrackV2_large.pth.tar` (4.5 GB) |
 
 ```bash
 mkdir -p checkpoints
-huggingface-cli download taryya/FlexTrackV2 FlexTrackV2.pth.tar --local-dir checkpoints
-sha256sum -c checkpoints/FlexTrackV2.pth.tar.sha256   # expect e7cbfb20…a7f2b
+# base
+huggingface-cli download taryya/FlexTrackV2 FlexTrackV2.pth.tar       --local-dir checkpoints
+# large (optional)
+huggingface-cli download taryya/FlexTrackV2 FlexTrackV2_large.pth.tar --local-dir checkpoints
+sha256sum -c checkpoints/*.sha256    # base e7cbfb20…  ·  large fc5e4193…
 ```
 
-The production config `experiments/flextrackv2/flextrackv2.yaml` already points `TEST.CHECKPOINT`
-at this path — no code changes needed.
+Run the large variant by passing `--yaml_name flextrackv2_large` to any eval driver, e.g.:
+
+```bash
+python RGBT_workspace/test_rgbt_mgpus.py --script_name flextrackv2 \
+       --yaml_name flextrackv2_large --dataset_name RGBT234 --threads 8
+```
 
 ## Data preparation
 
