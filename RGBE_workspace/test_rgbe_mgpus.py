@@ -7,6 +7,7 @@ import argparse
 prj = join(dirname(__file__), '..')
 if prj not in sys.path:
     sys.path.append(prj)
+DMM = os.path.abspath(os.path.join(prj, "data_missing_modality"))  # missing-modality annotation root (repo-relative)
 
 from lib.test.tracker.flextrackv2 import FlexTrackV2
 import lib.test.parameter.flextrackv2 as rgbe_prompt_params
@@ -65,7 +66,7 @@ def _run_sequence_impl(seq_name, seq_home, dataset_name, yaml_name, num_gpu=1, e
         return
 
     if "miss" in dataset_name:
-        json_path = "/mnt/task_runtime/data_missing_modality/Missing_data_annotation/visevent-miss/missing_results_visevent.json"
+        json_path = DMM + "/Missing_data_annotation/visevent-miss/missing_results_visevent.json"
         if os.path.exists(json_path):
             with open(json_path,'r') as load_f:
                 miss_index = json.load(load_f)

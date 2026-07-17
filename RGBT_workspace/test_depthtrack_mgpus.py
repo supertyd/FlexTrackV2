@@ -7,6 +7,7 @@ import argparse
 prj = join(dirname(__file__), '..')
 if prj not in sys.path:
     sys.path.append(prj)
+DMM = os.path.abspath(os.path.join(prj, "data_missing_modality"))  # missing-modality annotation root (repo-relative)
 
 from lib.test.tracker.flextrackv2 import FlexTrackV2Tracker
 import lib.test.parameter.flextrackv2 as rgbt_prompt_params
@@ -28,14 +29,14 @@ def resolve_miss_json_path(dataset_name, official_path):
     mg = _RGBDROP_RE.search(dataset_name)
     if mg:
         base = dataset_name[:mg.start()]
-        return ("/mnt/task_runtime/data_missing_modality/synthetic_ratio_rgbdrop/"
+        return (DMM + "/synthetic_ratio_rgbdrop/"
                 "{}_rgbdropR{}.json".format(base.lower(), mg.group(1)), True)
     m = _RATIO_SUFFIX_RE.search(dataset_name)
     if m:
         base = dataset_name[:m.start()]
         ratio_str = m.group(1)
         return (
-            "/mnt/task_runtime/data_missing_modality/synthetic_ratio/"
+            DMM + "/synthetic_ratio/"
             "{}_missR{}.json".format(base.lower(), ratio_str),
             True,
         )
@@ -72,7 +73,7 @@ def run_sequence(seq_name, seq_home, dataset_name, yaml_name, num_gpu=1, epoch=3
         import collections
         json_path, _ = resolve_miss_json_path(
             dataset_name,
-            "/mnt/task_runtime/data_missing_modality/Missing_data_annotation/depthtrack-miss/missing_results_depthtrack.json",
+            DMM + "/Missing_data_annotation/depthtrack-miss/missing_results_depthtrack.json",
         )
         if os.path.exists(json_path):
             with open(json_path, 'r') as load_f:
@@ -177,7 +178,7 @@ if __name__ == '__main__':
     if "miss" in dataset_name:
         _jp, _ = resolve_miss_json_path(
             dataset_name,
-            "/mnt/task_runtime/data_missing_modality/Missing_data_annotation/depthtrack-miss/missing_results_depthtrack.json",
+            DMM + "/Missing_data_annotation/depthtrack-miss/missing_results_depthtrack.json",
         )
         if not os.path.exists(_jp):
             raise SystemExit("FATAL: missing-modality annotation absent for {}: {}. Aborting (won't fake full-modality).".format(dataset_name, _jp))

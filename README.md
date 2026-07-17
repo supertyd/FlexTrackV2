@@ -139,12 +139,25 @@ bash scripts/eval/visevent.sh     # VisEvent
 bash scripts/eval/depthtrack.sh   # DepthTrack
 ```
 
-Missing modality — pass the `_miss` dataset variant to the same driver, e.g.:
+Missing modality — first download the missing-modality annotation masks (official `_miss`
+splits for all four benchmarks + the synthetic missing-rate sweeps) from HuggingFace and extract
+them to `data_missing_modality/` at the repo root:
+
+```bash
+huggingface-cli download taryya/FlexTrackV2 missing_modality_annotations.tar.gz --local-dir .
+tar -xzf missing_modality_annotations.tar.gz          # -> data_missing_modality/
+```
+
+Then pass the `_miss` dataset variant to the same driver, e.g.:
 
 ```bash
 python RGBT_workspace/test_rgbt_mgpus.py --script_name flextrackv2 --yaml_name flextrackv2 \
        --dataset_name LasHeR_miss --threads 8
 ```
+
+The masks are per-frame `[rgb_present, aux_present]` flags; the drivers resolve them relative to
+the repo root, so no path editing is needed. For the synthetic missing-rate degradation sweep
+(`_missR000…_missR100`, `_missRGB###`) see [docs/REPRODUCE_missrate.md](docs/REPRODUCE_missrate.md).
 
 Score the produced boxes with the tools in `scripts/tools/`
 (`evaluate_lasher.py`, `evaluate_lasher_visevent.py`, `evaluate_depthtrack.py`).

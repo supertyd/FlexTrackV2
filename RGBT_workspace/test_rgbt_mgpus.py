@@ -7,6 +7,7 @@ import argparse
 prj = join(dirname(__file__), '..')
 if prj not in sys.path:
     sys.path.append(prj)
+DMM = os.path.abspath(os.path.join(prj, "data_missing_modality"))  # missing-modality annotation root (repo-relative)
 
 from lib.test.tracker.flextrackv2 import FlexTrackV2Tracker
 
@@ -32,14 +33,14 @@ def resolve_miss_json_path(dataset_name, official_paths):
     mg = _RGBDROP_RE.search(dataset_name)
     if mg:
         base = dataset_name[:mg.start()]
-        return ("/mnt/task_runtime/data_missing_modality/synthetic_ratio_rgbdrop/"
+        return (DMM + "/synthetic_ratio_rgbdrop/"
                 "{}_rgbdropR{}.json".format(base.lower(), mg.group(1)), True)
     m = _RATIO_SUFFIX_RE.search(dataset_name)
     if m:
         base = dataset_name[:m.start()]
         ratio_str = m.group(1)
         return (
-            "/mnt/task_runtime/data_missing_modality/synthetic_ratio/"
+            DMM + "/synthetic_ratio/"
             "{}_missR{}.json".format(base.lower(), ratio_str),
             True,
         )
@@ -48,7 +49,7 @@ def resolve_miss_json_path(dataset_name, official_paths):
     # generic fallback for names like "<Base>_miss" not in the explicit map
     base = dataset_name[:-5] if dataset_name.endswith("_miss") else dataset_name
     return (
-        "/mnt/task_runtime/data_missing_modality/Missing_data_annotation/"
+        DMM + "/Missing_data_annotation/"
         + base.lower() + "-miss/missing_results_" + base.lower() + ".json",
         False,
     )
@@ -134,9 +135,9 @@ def run_sequence(seq_name, seq_home, dataset_name, yaml_name, num_gpu=1, epoch=3
     if "miss" in dataset_name:
         import collections
         _official_paths = {
-            "LasHeR_miss": "/mnt/task_runtime/data_missing_modality/Missing_data_annotation/LasHeR245-Miss/missing_results_lasher245.json",
-            "RGBT234_miss": "/mnt/task_runtime/data_missing_modality/Missing_data_annotation/RGBT234-Miss/missing_results_rgbt234.json",
-            "VisEvent_miss": "/mnt/task_runtime/data_missing_modality/Missing_data_annotation/visevent-miss/missing_results_visevent.json",
+            "LasHeR_miss": DMM + "/Missing_data_annotation/LasHeR245-Miss/missing_results_lasher245.json",
+            "RGBT234_miss": DMM + "/Missing_data_annotation/RGBT234-Miss/missing_results_rgbt234.json",
+            "VisEvent_miss": DMM + "/Missing_data_annotation/visevent-miss/missing_results_visevent.json",
         }
         json_path, _ = resolve_miss_json_path(dataset_name, _official_paths)
         if os.path.exists(json_path):
@@ -281,9 +282,9 @@ if __name__ == '__main__':
     # worse, silently faking a full-modality run.
     if "miss" in dataset_name:
         _miss_paths = {
-            "LasHeR_miss": "/mnt/task_runtime/data_missing_modality/Missing_data_annotation/LasHeR245-Miss/missing_results_lasher245.json",
-            "RGBT234_miss": "/mnt/task_runtime/data_missing_modality/Missing_data_annotation/RGBT234-Miss/missing_results_rgbt234.json",
-            "VisEvent_miss": "/mnt/task_runtime/data_missing_modality/Missing_data_annotation/visevent-miss/missing_results_visevent.json",
+            "LasHeR_miss": DMM + "/Missing_data_annotation/LasHeR245-Miss/missing_results_lasher245.json",
+            "RGBT234_miss": DMM + "/Missing_data_annotation/RGBT234-Miss/missing_results_rgbt234.json",
+            "VisEvent_miss": DMM + "/Missing_data_annotation/visevent-miss/missing_results_visevent.json",
         }
         _jp, _is_synth = resolve_miss_json_path(dataset_name, _miss_paths)
         if not os.path.exists(_jp):
