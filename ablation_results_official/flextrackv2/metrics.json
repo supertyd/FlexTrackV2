@@ -1,0 +1,21 @@
+{
+  "config": "flextrackv2",
+  "RGBT234": {
+    "mpr": 93.37,
+    "msr": 70.02
+  },
+  "RGBT234_miss": {
+    "mpr": null,
+    "msr": null
+  },
+  "LasHeR": {
+    "pr": null,
+    "sr": null
+  },
+  "LasHeR_miss": {
+    "pr": null,
+    "sr": null
+  },
+  "VisEvent": null,
+  "VisEvent_miss": null
+}

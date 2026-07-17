@@ -35,6 +35,5 @@ init line "1" filled with GT).
 
 ## Files
 - `LasHeR_full.png`, `LasHeR_miss.png`, `DepthTrack_full.png`, `DepthTrack_miss.png`, `VisEvent_full.png`, `VisEvent_miss.png`
-- `ALL_six_stacked.png` — all six stacked for quick review
 
 Regenerate: `scratchpad/make_fig.py` (helper `scratchpad/loaders.py`).
