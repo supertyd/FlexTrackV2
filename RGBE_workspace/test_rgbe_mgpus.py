@@ -9,7 +9,7 @@ if prj not in sys.path:
     sys.path.append(prj)
 DMM = os.path.abspath(os.path.join(prj, "data_missing_modality"))  # missing-modality annotation root (repo-relative)
 
-from lib.test.tracker.flextrackv2 import FlexTrackV2
+from lib.test.tracker.flextrackv2 import FlexTrackV2Tracker
 import lib.test.parameter.flextrackv2 as rgbe_prompt_params
 from lib.train.dataset.depth_utils import get_x_frame
 import multiprocessing
@@ -76,7 +76,7 @@ def _run_sequence_impl(seq_name, seq_home, dataset_name, yaml_name, num_gpu=1, e
 
     if script_name == 'flextrackv2':
         params = rgbe_prompt_params.parameters(yaml_name,debug)
-        ostrack = FlexTrackV2(params,dataset_name)  # "VisEvent"
+        ostrack = FlexTrackV2Tracker(params,dataset_name)  # "VisEvent"
         tracker = ViPT_RGBE(tracker=ostrack)
 
     seq_path = seq_home + '/' + seq_name

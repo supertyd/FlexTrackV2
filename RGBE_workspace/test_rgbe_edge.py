@@ -11,7 +11,7 @@ import numpy as np
 import multiprocessing, torch, cv2
 prj = join(dirname(__file__), '..')
 if prj not in sys.path: sys.path.append(prj)
-from lib.test.tracker.flextrackv2 import FlexTrackV2
+from lib.test.tracker.flextrackv2 import FlexTrackV2Tracker
 import lib.test.parameter.flextrackv2 as rgbe_prompt_params
 
 def genConfig(seq_path):
@@ -39,7 +39,7 @@ def run_sequence(seq_name, seq_home, yaml_name, tag, num_gpu, epoch):
     if os.path.exists(save_path): print(f'-1 {seq_name}'); return
     try:
         params = rgbe_prompt_params.parameters(yaml_name, epoch)
-        tracker = FlexTrackV2(params, 'VisEvent')          # use VisEvent (gs) thresholds
+        tracker = FlexTrackV2Tracker(params, 'VisEvent')          # use VisEvent (gs) thresholds
         RGB, E, gt = genConfig(f'{seq_home}/{seq_name}')
         n = len(gt) if len(RGB) == len(gt) else len(RGB)
         result = np.zeros((n, 4), dtype=gt.dtype); result[0] = gt[0]

@@ -10,7 +10,7 @@ import numpy as np
 import multiprocessing, torch, cv2
 prj = join(dirname(__file__), '..')
 if prj not in sys.path: sys.path.append(prj)
-from lib.test.tracker.flextrackv2 import FlexTrackV2
+from lib.test.tracker.flextrackv2 import FlexTrackV2Tracker
 import lib.test.parameter.flextrackv2 as rgbe_prompt_params
 from lib.train.dataset.depth_utils import get_x_frame
 
@@ -34,7 +34,7 @@ def run_sequence(seq_name, seq_home, yaml_name, rate, tag, num_gpu, epoch):
         print(f'-1 {seq_name}'); return
     try:
         params = rgbe_prompt_params.parameters(yaml_name, epoch)
-        tracker_core = FlexTrackV2(params, 'VisEvent_miss')      # thresholds: standard miss config
+        tracker_core = FlexTrackV2Tracker(params, 'VisEvent_miss')      # thresholds: standard miss config
         dtype = getattr(params.cfg.DATA, 'XTYPE', 'rgbrgb')
         RGB, E, gt, absent = genConfig(f'{seq_home}/{seq_name}')
         n = len(gt) if len(RGB) == len(gt) else len(RGB)
