@@ -183,10 +183,9 @@ DepthTrack / VOT-RGBD also support the official VOT toolkit; see `lib/test/vot/`
 
 ## TPAMI ablation study
 
-The ablations backing the journal extension (see [docs/ABLATIONS.md](docs/ABLATIONS.md) and the
-interactive [results/ablation_dashboard.html](results/ablation_dashboard.html)) run across multiple
-machines in parallel — see [docs/MULTI_NODE_SETUP.md](docs/MULTI_NODE_SETUP.md) for the multi-node
-setup log if reproducing on new hardware.
+The ablations backing the journal extension are summarized in the interactive
+[results/ablation_dashboard.html](results/ablation_dashboard.html), with per-config metrics under
+[results/ablation_results_official/](results/ablation_results_official/).
 
 ## Repository layout
 
@@ -199,7 +198,6 @@ experiments/flextrackv2/
   flextrackv2.yaml           production config (weights path + operating point)
 scripts/                     train.sh · eval/ per-benchmark drivers · tools/ scoring utils
 RGBT_workspace/, RGBE_workspace/   multi-GPU eval harnesses
-docs/                        reproduction & analysis docs
 results/                     published metrics, figures, ablation dashboard
 archive/                     historical configs, one-off scripts, dev notes (not needed to use the model)
 ```

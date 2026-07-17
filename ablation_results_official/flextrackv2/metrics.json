@@ -5,17 +5,23 @@
     "msr": 70.02
   },
   "RGBT234_miss": {
-    "mpr": null,
-    "msr": null
+    "mpr": 86.53,
+    "msr": 63.45
   },
   "LasHeR": {
-    "pr": null,
-    "sr": null
+    "pr": 77.32,
+    "sr": 61.96
   },
   "LasHeR_miss": {
-    "pr": null,
-    "sr": null
+    "pr": 67.7,
+    "sr": 54.38
   },
-  "VisEvent": null,
-  "VisEvent_miss": null
+  "VisEvent": {
+    "auc": 65.24,
+    "pr": 79.27
+  },
+  "VisEvent_miss": {
+    "auc": 58.12,
+    "pr": 72.76
+  }
 }
