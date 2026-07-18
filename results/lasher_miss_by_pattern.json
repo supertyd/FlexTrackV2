@@ -1,0 +1,12 @@
+{
+  "note": "FlexTrackV2 (flextrackv2 config) LasHeR_miss PR/SR broken down by the 5 official missing-modality PATTERN groups (49 seqs each). Scored with the RGBT toolkit; 'ALL' reproduces the headline LasHeR_miss 67.70/54.38. Shows robustness is stable across dropout patterns (no catastrophic failure mode); the compound long-term+random pattern is hardest.",
+  "metric": "PR / SR",
+  "ALL": {"pr": 67.70, "sr": 54.38},
+  "by_pattern": {
+    "random_dropout":      {"pr": 67.16, "sr": 54.87},
+    "long_term_blackout":  {"pr": 67.90, "sr": 54.49},
+    "modality_swap":       {"pr": 68.48, "sr": 54.43},
+    "long_term_plus_random": {"pr": 65.39, "sr": 52.42},
+    "swap_plus_random":    {"pr": 69.56, "sr": 55.70}
+  }
+}
