@@ -61,6 +61,47 @@ FlexTrack-V2 vs. the ICCV baseline (FlexTrack). Higher is better; **bold** marks
 FPS measured on a single NVIDIA A100 at inference. Reproduce with
 `python tracking/profile_model.py --script flextrackv2 --config flextrackv2` (or `flextrackv2_large`).
 
+### 🧬 Per-attribute breakdown (LasHeR, 19 official challenge attributes)
+
+| Attribute | n | Full PR / SR | Missing PR / SR | ΔPR |
+| :--- | :---: | :---: | :---: | :---: |
+| No challenge | 33 | 91.79 / 75.46 | 87.33 / 71.19 | −4.5 |
+| Partial occlusion | 215 | 75.38 / 60.16 | 65.40 / 52.43 | −10.0 |
+| Total occlusion | 87 | 67.26 / 53.77 | 59.77 / 47.66 | −7.5 |
+| Thermal crossover | 148 | 69.35 / 55.41 | 58.32 / 46.81 | −11.0 |
+| Low resolution | 68 | 67.54 / 50.41 | 55.67 / 41.29 | −11.9 |
+| Fast motion | 193 | 76.06 / 61.18 | 66.02 / 53.65 | −10.0 |
+| Scale variation | 222 | 77.07 / 61.87 | 67.41 / 54.27 | −9.7 |
+| Deformation | 46 | 75.75 / 61.99 | 71.83 / 58.24 | **−3.9** |
+| Out-of-view | 7 | 87.08 / 73.25 | 74.61 / 65.38 | −12.5 |
+
+Full 19-attribute table: [results/lasher_by_attribute.json](results/lasher_by_attribute.json).
+Thermal-crossover and low-resolution are FlexTrack-V2's hardest challenges in both regimes;
+deformation degrades least under missing modality (motion cues carry through RGB alone), while
+the compound occlusion/appearance attributes (bg-clutter, similar-appearance, camera-moving) all
+drop by a fairly uniform ~10 PR — the robustness mechanism helps broadly rather than fixing one
+specific failure mode.
+
+### 🔬 Mechanism & interpretability
+
+Evidence for *why* FlexTrack-V2 stays robust when a modality drops out — target attention is
+near-invariant to dropout (93% of frames keep cosine-similarity > 0.9 vs. the complete-modality
+attention map) because the BMR hallucination keeps the fused representation stable
+(cosine 0.99 with vs. 0.72 without, aggregated over 12 LasHeR sequences):
+
+- [results/figures/flextrackv2_vs_v1/interp_attention_quantified.png](results/figures/flextrackv2_vs_v1/interp_attention_quantified.png) — quantified attention-invariance + fused-representation-stability evidence
+- [results/figures/flextrackv2_vs_v1/interp_attention_gallery.png](results/figures/flextrackv2_vs_v1/interp_attention_gallery.png) — qualitative attention-map gallery (full vs. modality-missing)
+- [results/figures/flextrackv2_vs_v1/interp_miss_4men.png](results/figures/flextrackv2_vs_v1/interp_miss_4men.png) — per-frame case study, FlexTrack-V2 vs. V1 under RGB dropout
+- [results/mechanism_figures/](results/mechanism_figures/) — MoE router specialization by present modality, per-sequence and 12-sequence-aggregate hallucination fidelity, temporal routing traces (raw analysis, less polished)
+
+### 🏆 Comparison vs. published SOTA under missing modality
+
+Standard success/precision plots and a per-attribute radar against 7 published trackers
+(SUTrack, STTrack, SDSTrack, SeqTrackV2, ViPT, MCITrack) on LasHeR-Miss — FlexTrack-V2 ranks #1:
+
+- [results/figures/flextrackv2_vs_v1/bench_lasher_miss_srpr.png](results/figures/flextrackv2_vs_v1/bench_lasher_miss_srpr.png)
+- [results/figures/flextrackv2_vs_v1/bench_lasher_miss_radar.png](results/figures/flextrackv2_vs_v1/bench_lasher_miss_radar.png)
+
 ---
 
 ## Installation

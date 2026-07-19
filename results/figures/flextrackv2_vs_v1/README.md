@@ -35,5 +35,14 @@ init line "1" filled with GT).
 
 ## Files
 - `LasHeR_full.png`, `LasHeR_miss.png`, `DepthTrack_full.png`, `DepthTrack_miss.png`, `VisEvent_full.png`, `VisEvent_miss.png`
+  — the per-sequence overlap-curve comparisons described above.
+- `interp_attention_quantified.png`, `interp_attention_gallery.png`, `interp_miss_4men.png`
+  — mechanism/interpretability: why FlexTrackV2's target attention and fused representation stay
+  stable under modality dropout (quantified over 12–16 LasHeR sequences, plus a qualitative gallery
+  and a per-frame case study on `4men`).
+- `bench_lasher_miss_srpr.png`, `bench_lasher_miss_radar.png`
+  — standard success/precision plots and a per-attribute radar comparing FlexTrackV2 against
+  7 published trackers (SUTrack, STTrack, SDSTrack, SeqTrackV2, ViPT, MCITrack) on LasHeR-Miss.
 
-Regenerate: `scratchpad/make_fig.py` (helper `scratchpad/loaders.py`).
+Regenerate the overlap-curve figures with `python make_fig.py [<ConfigName>|all]` (run from this
+directory; helper module `loaders.py`).

@@ -1,0 +1,241 @@
+{
+  "note": "FlexTrackV2 LasHeR per-attribute breakdown (official 19 LasHeR challenge attributes). full = complete modality; miss = official missing-modality split. ALL reproduces the headline numbers.",
+  "ALL_full": {
+    "pr": 77.32,
+    "sr": 61.96
+  },
+  "ALL_miss": {
+    "pr": 67.7,
+    "sr": 54.38
+  },
+  "by_attribute": {
+    "NO": {
+      "desc": "no-challenge",
+      "n": 33,
+      "full": {
+        "pr": 91.79,
+        "sr": 75.46
+      },
+      "miss": {
+        "pr": 87.33,
+        "sr": 71.19
+      }
+    },
+    "PO": {
+      "desc": "partial-occ",
+      "n": 215,
+      "full": {
+        "pr": 75.38,
+        "sr": 60.16
+      },
+      "miss": {
+        "pr": 65.4,
+        "sr": 52.43
+      }
+    },
+    "TO": {
+      "desc": "total-occ",
+      "n": 87,
+      "full": {
+        "pr": 67.26,
+        "sr": 53.77
+      },
+      "miss": {
+        "pr": 59.77,
+        "sr": 47.66
+      }
+    },
+    "HO": {
+      "desc": "hyaline-occ",
+      "n": 17,
+      "full": {
+        "pr": 67.39,
+        "sr": 58.32
+      },
+      "miss": {
+        "pr": 56.94,
+        "sr": 51.33
+      }
+    },
+    "MB": {
+      "desc": "motion-blur",
+      "n": 88,
+      "full": {
+        "pr": 70.44,
+        "sr": 56.1
+      },
+      "miss": {
+        "pr": 63.89,
+        "sr": 50.95
+      }
+    },
+    "LI": {
+      "desc": "low-illum",
+      "n": 51,
+      "full": {
+        "pr": 68.65,
+        "sr": 54.26
+      },
+      "miss": {
+        "pr": 61.35,
+        "sr": 49.06
+      }
+    },
+    "HI": {
+      "desc": "high-illum",
+      "n": 34,
+      "full": {
+        "pr": 83.86,
+        "sr": 66.52
+      },
+      "miss": {
+        "pr": 75.6,
+        "sr": 59.45
+      }
+    },
+    "AIV": {
+      "desc": "abrupt-illum-var",
+      "n": 7,
+      "full": {
+        "pr": 63.2,
+        "sr": 54.58
+      },
+      "miss": {
+        "pr": 53.56,
+        "sr": 47.23
+      }
+    },
+    "LR": {
+      "desc": "low-resolution",
+      "n": 68,
+      "full": {
+        "pr": 67.54,
+        "sr": 50.41
+      },
+      "miss": {
+        "pr": 55.67,
+        "sr": 41.29
+      }
+    },
+    "DEF": {
+      "desc": "deformation",
+      "n": 46,
+      "full": {
+        "pr": 75.75,
+        "sr": 61.99
+      },
+      "miss": {
+        "pr": 71.83,
+        "sr": 58.24
+      }
+    },
+    "BC": {
+      "desc": "bg-clutter",
+      "n": 78,
+      "full": {
+        "pr": 76.03,
+        "sr": 60.94
+      },
+      "miss": {
+        "pr": 65.62,
+        "sr": 53.28
+      }
+    },
+    "SA": {
+      "desc": "similar-appearance",
+      "n": 107,
+      "full": {
+        "pr": 67.49,
+        "sr": 54.61
+      },
+      "miss": {
+        "pr": 57.44,
+        "sr": 46.79
+      }
+    },
+    "CM": {
+      "desc": "camera-moving",
+      "n": 133,
+      "full": {
+        "pr": 76.67,
+        "sr": 61.26
+      },
+      "miss": {
+        "pr": 65.86,
+        "sr": 52.84
+      }
+    },
+    "TC": {
+      "desc": "thermal-crossover",
+      "n": 148,
+      "full": {
+        "pr": 69.35,
+        "sr": 55.41
+      },
+      "miss": {
+        "pr": 58.32,
+        "sr": 46.81
+      }
+    },
+    "FL": {
+      "desc": "frame-lost",
+      "n": 20,
+      "full": {
+        "pr": 64.75,
+        "sr": 51.78
+      },
+      "miss": {
+        "pr": 55.68,
+        "sr": 43.84
+      }
+    },
+    "OV": {
+      "desc": "out-of-view",
+      "n": 7,
+      "full": {
+        "pr": 87.08,
+        "sr": 73.25
+      },
+      "miss": {
+        "pr": 74.61,
+        "sr": 65.38
+      }
+    },
+    "FM": {
+      "desc": "fast-motion",
+      "n": 193,
+      "full": {
+        "pr": 76.06,
+        "sr": 61.18
+      },
+      "miss": {
+        "pr": 66.02,
+        "sr": 53.65
+      }
+    },
+    "SV": {
+      "desc": "scale-var",
+      "n": 222,
+      "full": {
+        "pr": 77.07,
+        "sr": 61.87
+      },
+      "miss": {
+        "pr": 67.41,
+        "sr": 54.27
+      }
+    },
+    "ARC": {
+      "desc": "aspect-ratio-change",
+      "n": 109,
+      "full": {
+        "pr": 71.97,
+        "sr": 58.34
+      },
+      "miss": {
+        "pr": 63.79,
+        "sr": 52.47
+      }
+    }
+  }
+}
