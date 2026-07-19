@@ -35,9 +35,9 @@ def load_masks(json_path, key):
 
 # each config: name, seq, images, gt, v2 pred, v1 loader; miss configs add aux label + mask key
 CONFIGS={
- "LasHeR_full":   dict(seq="drillmaster1117", imgs=f"{LASHER}/drillmaster1117/visible", exts=["*.jpg"],
-                       gt=f"{LASHER}/drillmaster1117/visible.txt",
-                       v2=f"{FR}/LasHeR/drillmaster1117.txt", v1=("gen",f"{V1}/LasHER/drillmaster1117.txt")),
+ "LasHeR_full":   dict(seq="raincarturn", imgs=f"{LASHER}/raincarturn/visible", exts=["*.jpg"],
+                       gt=f"{LASHER}/raincarturn/visible.txt",
+                       v2=f"{FR}/LasHeR/raincarturn.txt", v1=("gen",f"{V1}/LasHER/raincarturn.txt")),
  "LasHeR_miss":   dict(seq="4men", imgs=f"{LASHER}/4men/visible", exts=["*.jpg"],
                        gt=f"{LASHER}/4men/visible.txt",
                        v2=f"{FR}/LasHeR_miss/4men.txt", v1=("gen",f"{V1}/LasHeR_miss/4men.txt"),
