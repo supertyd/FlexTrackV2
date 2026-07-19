@@ -22,7 +22,7 @@ target while the blue (V1) box drifts to a distractor, exactly at the annotated 
 ## Chosen sequences (V2 clearly wins, V1 clearly fails), mean overlap over present frames
 | Figure | Sequence | FlexTrackV2 | V1 | gap | frames |
 |---|---|---|---|---|---|
-| LasHeR_full | raincarturn | 73.8 | 60.5 | +13.3 | 334 |
+| LasHeR_full | boyscomeleft | 72.1 | 56.0 | +16.1 | 464 |
 | LasHeR_miss | 4men | 61.7 | 17.9 | +43.8 | 414 |
 | DepthTrack_full | notebook01_indoor | 62.9 | 16.4 | +46.6 | 2000 |
 | DepthTrack_miss | mobilephone03_indoor | 74.3 | 48.6 | +25.7 | 677 |
