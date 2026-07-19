@@ -87,8 +87,10 @@ Two released variants (each a single self-describing model — the config carrie
 
 | Variant | Backbone | Config | Checkpoint |
 |---|---|---|---|
-| **FlexTrack-V2** (base) | Fast-iTPN-B | `experiments/flextrackv2/flextrackv2.yaml` | `FlexTrackV2.pth.tar` (1.4 GB) |
-| **FlexTrack-V2 Large** | Fast-iTPN-L | `experiments/flextrackv2/flextrackv2_large.yaml` | `FlexTrackV2_large.pth.tar` (4.5 GB) |
+| **FlexTrack-V2** (base) | Fast-iTPN-B | `experiments/flextrackv2/flextrackv2.yaml` | `FlexTrackV2.pth.tar` (455 MB) |
+| **FlexTrack-V2 Large** | Fast-iTPN-L | `experiments/flextrackv2/flextrackv2_large.yaml` | `FlexTrackV2_large.pth.tar` (1.5 GB) |
+
+Both are inference-only checkpoints (weights only, no optimizer state).
 
 ```bash
 mkdir -p checkpoints
@@ -96,7 +98,7 @@ mkdir -p checkpoints
 huggingface-cli download taryya/FlexTrackV2 FlexTrackV2.pth.tar       --local-dir checkpoints
 # large (optional)
 huggingface-cli download taryya/FlexTrackV2 FlexTrackV2_large.pth.tar --local-dir checkpoints
-sha256sum -c checkpoints/*.sha256    # base e7cbfb20…  ·  large fc5e4193…
+sha256sum -c checkpoints/*.sha256    # base b516cfa3…  ·  large 164cbc3f…
 ```
 
 Run the large variant by passing `--yaml_name flextrackv2_large` to any eval driver, e.g.:
