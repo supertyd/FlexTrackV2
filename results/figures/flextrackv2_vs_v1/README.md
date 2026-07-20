@@ -39,6 +39,9 @@ init line "1" filled with GT).
 - `interp_attention_quantified.png`, `interp_attention_gallery.png`, `interp_miss_4men.png`
   — mechanism/interpretability: why FlexTrackV2's target attention and fused representation stay
   stable under modality dropout (quantified over 12–16 LasHeR sequences, plus a qualitative gallery
+  showing the RGB crop, the real (unzeroed) thermal crop, and the attention overlay under full vs.
+  thermal-missing conditions side by side — regenerate with `python tools/gen_attention_gallery.py`
+  (run from the repo root)
   and a per-frame case study on `4men`).
 - `bench_lasher_miss_srpr.png`, `bench_lasher_miss_radar.png`
   — standard success/precision plots and a per-attribute radar comparing FlexTrackV2 against
