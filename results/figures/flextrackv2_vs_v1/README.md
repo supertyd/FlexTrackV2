@@ -2,7 +2,11 @@
 
 Per-frame overlap (IoU) curves + sampled frames, in the style of the reference figure.
 Each figure plots **both** curves in one axis: FlexTrackV2 (red, ours) vs FlexTrack V1 (blue).
-Boxes on thumbnails: **green = GT**, **red = FlexTrackV2**, **blue = FlexTrack V1**.
+The sampled frames are shown **twice** per column — an **RGB** row and the pixel-aligned
+**auxiliary-modality** row (Thermal for LasHeR, Depth for DepthTrack, Event for VisEvent) —
+so a reader can see what the other sensor actually looked like, not just RGB. DepthTrack's raw
+16-bit depth is percentile-normalized and colormapped (`inferno`) for visibility. Boxes on
+thumbnails (both rows): **green = GT**, **red = FlexTrackV2**, **blue = FlexTrack V1**.
 The 4 colored dashed lines (blue/black/red/green) mark the 4 sampled frames shown above.
 
 ### Missing-modality panels (`*_miss`)
@@ -38,11 +42,10 @@ init line "1" filled with GT).
   — the per-sequence overlap-curve comparisons described above.
 - `interp_attention_quantified.png`, `interp_attention_gallery.png`, `interp_miss_4men.png`
   — mechanism/interpretability: why FlexTrackV2's target attention and fused representation stay
-  stable under modality dropout (quantified over 12–16 LasHeR sequences, plus a qualitative gallery
+  stable under modality dropout (quantified over 12–16 LasHeR sequences; a qualitative gallery
   showing the RGB crop, the real (unzeroed) thermal crop, and the attention overlay under full vs.
   thermal-missing conditions side by side — regenerate with `python tools/gen_attention_gallery.py`
-  (run from the repo root)
-  and a per-frame case study on `4men`).
+  run from the repo root; and a per-frame case study on `4men`).
 - `bench_lasher_miss_srpr.png`, `bench_lasher_miss_radar.png`
   — standard success/precision plots and a per-attribute radar comparing FlexTrackV2 against
   7 published trackers (SUTrack, STTrack, SDSTrack, SeqTrackV2, ViPT, MCITrack) on LasHeR-Miss.
